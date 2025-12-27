@@ -57,8 +57,11 @@ pip install -r requirements.txt
 
 4. **Setup environment variables**
 ```bash
-# Create .env file
-echo "GEMINI_API_KEY=your_actual_api_key_here" > .env
+# Copy the example file
+cp .env.example .env
+
+# Edit .env file and add your actual Gemini API key
+# GEMINI_API_KEY=your_actual_api_key_here
 ```
 
 5. **Start backend server**
