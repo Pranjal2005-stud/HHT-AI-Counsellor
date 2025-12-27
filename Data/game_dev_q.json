@@ -1,0 +1,15 @@
+{
+  "domain": "Game Development",
+  "questions": [
+    { "id": "game_engines", "question": "Have you worked with game engines like Unity or Unreal Engine?", "weight": 2 },
+    { "id": "programming_languages", "question": "Are you comfortable with C# or C++ for game development?", "weight": 1 },
+    { "id": "game_mechanics", "question": "Do you understand core game mechanics and gameplay loops?", "weight": 1 },
+    { "id": "graphics_2d_3d", "question": "Have you created 2D or 3D game graphics?", "weight": 2 },
+    { "id": "physics", "question": "Are you familiar with game physics and collision detection?", "weight": 1 },
+    { "id": "animation", "question": "Have you implemented character animations in games?", "weight": 2 },
+    { "id": "ui_ux_games", "question": "Have you designed game UI/UX interfaces?", "weight": 1 },
+    { "id": "multiplayer", "question": "Have you developed multiplayer or networked games?", "weight": 2 },
+    { "id": "optimization_games", "question": "Do you know game performance optimization techniques?", "weight": 1 },
+    { "id": "game_publishing", "question": "Have you published a game on any platform?", "weight": 2 }
+  ]
+}

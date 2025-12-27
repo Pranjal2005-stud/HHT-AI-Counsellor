@@ -1,0 +1,15 @@
+{
+  "domain": "Data Engineering",
+  "questions": [
+    { "id": "etl", "question": "Have you built ETL (Extract, Transform, Load) pipelines?", "weight": 2 },
+    { "id": "sql_advanced", "question": "Are you comfortable with complex SQL queries and optimization?", "weight": 1 },
+    { "id": "big_data", "question": "Have you worked with big data tools like Spark or Hadoop?", "weight": 2 },
+    { "id": "data_warehousing", "question": "Do you understand data warehousing concepts?", "weight": 1 },
+    { "id": "streaming", "question": "Have you implemented real-time data streaming solutions?", "weight": 2 },
+    { "id": "cloud_data", "question": "Have you used cloud data services (AWS S3, BigQuery, Snowflake)?", "weight": 2 },
+    { "id": "data_modeling", "question": "Are you familiar with data modeling techniques?", "weight": 1 },
+    { "id": "orchestration", "question": "Have you used workflow orchestration tools (Airflow, Prefect)?", "weight": 2 },
+    { "id": "data_quality", "question": "Have you implemented data quality and validation checks?", "weight": 1 },
+    { "id": "apis_data", "question": "Have you built data APIs or worked with data integration?", "weight": 1 }
+  ]
+}

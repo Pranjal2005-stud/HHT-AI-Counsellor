@@ -1,0 +1,15 @@
+{
+  "domain": "Data Analytics",
+  "questions": [
+    { "id": "sql", "question": "Have you written SQL queries for data analysis?", "weight": 2 },
+    { "id": "cleaning", "question": "Are you comfortable cleaning data using Excel or Python?", "weight": 1 },
+    { "id": "pandas_numpy", "question": "Have you used Pandas or NumPy for data manipulation?", "weight": 2 },
+    { "id": "stats", "question": "Do you understand basic statistics (mean, median, variance)?", "weight": 1 },
+    { "id": "dashboard", "question": "Have you created dashboards using Power BI, Tableau, or similar?", "weight": 2 },
+    { "id": "visualization", "question": "Do you know how to visualize data effectively?", "weight": 1 },
+    { "id": "datasets", "question": "Have you worked with real-world datasets?", "weight": 1 },
+    { "id": "kpi", "question": "Do you understand KPIs and business metrics?", "weight": 1 },
+    { "id": "presentation", "question": "Have you presented data insights to others?", "weight": 1 },
+    { "id": "automation", "question": "Have you automated any data reports?", "weight": 1 }
+  ]
+}

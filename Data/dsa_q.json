@@ -1,0 +1,15 @@
+{
+  "domain": "Data Structures and Algorithms",
+  "questions": [
+    { "id": "arrays_strings", "question": "Are you comfortable with array and string manipulation problems?", "weight": 1 },
+    { "id": "linked_lists", "question": "Have you implemented linked list operations?", "weight": 1 },
+    { "id": "stacks_queues", "question": "Do you understand stacks and queues implementation?", "weight": 1 },
+    { "id": "trees_graphs", "question": "Have you solved tree and graph traversal problems?", "weight": 2 },
+    { "id": "sorting_searching", "question": "Are you familiar with various sorting and searching algorithms?", "weight": 1 },
+    { "id": "dynamic_programming", "question": "Have you solved dynamic programming problems?", "weight": 2 },
+    { "id": "recursion", "question": "Are you comfortable with recursive problem solving?", "weight": 1 },
+    { "id": "complexity", "question": "Do you understand time and space complexity analysis?", "weight": 2 },
+    { "id": "hash_tables", "question": "Have you used hash tables to solve optimization problems?", "weight": 1 },
+    { "id": "coding_interviews", "question": "Have you practiced coding interview problems regularly?", "weight": 2 }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "domain": "DevOps",
+  "questions": [
+    { "id": "version_control", "question": "Are you comfortable with Git and version control workflows?", "weight": 1 },
+    { "id": "ci_cd", "question": "Have you set up CI/CD pipelines?", "weight": 2 },
+    { "id": "containers", "question": "Do you have experience with Docker containers?", "weight": 2 },
+    { "id": "cloud_platforms", "question": "Have you worked with AWS, Azure, or Google Cloud?", "weight": 2 },
+    { "id": "monitoring", "question": "Have you implemented application monitoring and logging?", "weight": 1 },
+    { "id": "infrastructure", "question": "Do you understand Infrastructure as Code (Terraform, CloudFormation)?", "weight": 2 },
+    { "id": "automation", "question": "Have you automated deployment processes?", "weight": 1 },
+    { "id": "security_devops", "question": "Are you familiar with DevSecOps practices?", "weight": 1 },
+    { "id": "orchestration", "question": "Have you used Kubernetes for container orchestration?", "weight": 2 },
+    { "id": "scripting", "question": "Can you write automation scripts (Bash, Python, PowerShell)?", "weight": 1 }
+  ]
+}

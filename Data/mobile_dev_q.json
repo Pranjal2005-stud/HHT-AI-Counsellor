@@ -1,0 +1,15 @@
+{
+  "domain": "Mobile Development",
+  "questions": [
+    { "id": "platform", "question": "Have you built mobile apps for Android or iOS?", "weight": 2 },
+    { "id": "native_hybrid", "question": "Do you prefer native development or cross-platform frameworks?", "weight": 1 },
+    { "id": "ui_components", "question": "Are you familiar with mobile UI components and layouts?", "weight": 1 },
+    { "id": "lifecycle", "question": "Do you understand mobile app lifecycle management?", "weight": 2 },
+    { "id": "storage", "question": "Have you worked with local storage in mobile apps?", "weight": 1 },
+    { "id": "apis_mobile", "question": "Have you integrated REST APIs in mobile applications?", "weight": 1 },
+    { "id": "push_notifications", "question": "Have you implemented push notifications?", "weight": 2 },
+    { "id": "app_store", "question": "Have you published an app to Google Play or App Store?", "weight": 2 },
+    { "id": "device_features", "question": "Have you used device features like camera, GPS, or sensors?", "weight": 1 },
+    { "id": "performance_mobile", "question": "Do you know mobile app performance optimization techniques?", "weight": 1 }
+  ]
+}

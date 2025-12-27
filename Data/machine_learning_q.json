@@ -1,0 +1,15 @@
+{
+  "domain": "Machine Learning",
+  "questions": [
+    { "id": "ml_basics", "question": "Do you understand supervised vs unsupervised learning?", "weight": 1 },
+    { "id": "algorithms", "question": "Are you familiar with common ML algorithms (linear regression, decision trees)?", "weight": 1 },
+    { "id": "data_preprocessing", "question": "Have you worked with data cleaning and preprocessing?", "weight": 1 },
+    { "id": "ml_libraries", "question": "Have you used ML libraries like scikit-learn, TensorFlow, or PyTorch?", "weight": 2 },
+    { "id": "model_evaluation", "question": "Do you know how to evaluate model performance (accuracy, precision, recall)?", "weight": 1 },
+    { "id": "feature_engineering", "question": "Have you done feature selection and engineering?", "weight": 2 },
+    { "id": "deep_learning", "question": "Have you built neural networks or deep learning models?", "weight": 2 },
+    { "id": "ml_deployment", "question": "Have you deployed ML models to production?", "weight": 2 },
+    { "id": "overfitting", "question": "Do you understand overfitting and how to prevent it?", "weight": 1 },
+    { "id": "ml_pipeline", "question": "Have you built end-to-end ML pipelines?", "weight": 2 }
+  ]
+}

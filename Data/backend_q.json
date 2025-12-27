@@ -1,0 +1,15 @@
+{
+  "domain": "Backend Development",
+  "questions": [
+    { "id": "http", "question": "Do you understand how the HTTP request–response cycle works?", "weight": 1 },
+    { "id": "rest", "question": "Have you built a REST API using any framework (Flask, FastAPI, Express, Spring)?", "weight": 2 },
+    { "id": "sql", "question": "Have you worked with SQL databases and written joins or complex queries?", "weight": 2 },
+    { "id": "auth", "question": "Do you understand authentication mechanisms like JWT or sessions?", "weight": 2 },
+    { "id": "orm", "question": "Have you used ORMs (SQLAlchemy, Hibernate, Prisma)?", "weight": 1 },
+    { "id": "versioning", "question": "Do you know how API versioning works?", "weight": 1 },
+    { "id": "errors", "question": "Have you handled error handling and status codes properly?", "weight": 1 },
+    { "id": "deploy", "question": "Have you deployed a backend application to any server or cloud?", "weight": 2 },
+    { "id": "sys_design", "question": "Do you understand basic system design concepts?", "weight": 2 },
+    { "id": "caching", "question": "Have you worked with caching (Redis) or background tasks?", "weight": 2 }
+  ]
+}

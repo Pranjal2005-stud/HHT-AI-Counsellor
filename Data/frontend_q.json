@@ -1,0 +1,15 @@
+{
+  "domain": "Frontend Development",
+  "questions": [
+    { "id": "html_css_js", "question": "Are you comfortable with HTML, CSS, and JavaScript basics?", "weight": 1 },
+    { "id": "frameworks", "question": "Have you built a frontend using React, Angular, or Vue?", "weight": 2 },
+    { "id": "state_props", "question": "Do you understand component state and props?", "weight": 2 },
+    { "id": "api", "question": "Have you worked with APIs from the frontend?", "weight": 1 },
+    { "id": "browser", "question": "Do you know how browser rendering works (DOM, CSSOM)?", "weight": 1 },
+    { "id": "auth", "question": "Have you implemented authentication flows on the frontend?", "weight": 2 },
+    { "id": "responsive", "question": "Do you understand responsive design principles?", "weight": 1 },
+    { "id": "state_mgmt", "question": "Have you used any state management library (Redux, Zustand)?", "weight": 2 },
+    { "id": "perf", "question": "Have you optimized frontend performance?", "weight": 1 },
+    { "id": "deploy", "question": "Have you deployed a frontend application?", "weight": 2 }
+  ]
+}
