@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:8000';
+const API_BASE_URL = 'https://hht-ai-counsellor.onrender.com';
 
 function App() {
   const [sessionId, setSessionId] = useState(null);
