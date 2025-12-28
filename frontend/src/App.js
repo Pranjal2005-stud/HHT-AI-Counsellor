@@ -311,8 +311,8 @@ function App() {
           <h1 className="header-title">HHT AI Counsellor</h1>
         </div>
         {conversationStarted && (
-          <button className="restart-button" onClick={restartConversation}>
-            Restart Conversation
+          <button className="restart-button" onClick={restartConversation} title="Restart Conversation">
+            ⟲
           </button>
         )}
       </div>
