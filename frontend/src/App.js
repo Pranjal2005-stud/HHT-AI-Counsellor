@@ -182,12 +182,22 @@ function App() {
             message.toLowerCase().includes('experience') ||
             message.length > 10)) { // Assume longer messages are feedback
           
-          // Store feedback (you can send to backend or log)
-          console.log('User feedback received:', message);
-          
-          setFeedbackGiven(true);
-          addMessage("Thank you so much for your valuable feedback! It helps us improve our service. Feel free to use the restart button to take another assessment or ask more questions.", 'assistant');
-          return;
+          // Send feedback to backend for AI-enhanced response
+          try {
+            const response = await axios.post(`${API_BASE_URL}/feedback`, {
+              session_id: sessionId,
+              feedback: message
+            });
+            
+            setFeedbackGiven(true);
+            addMessage(response.data.message, 'assistant');
+            return;
+          } catch (error) {
+            // Fallback response if API fails
+            setFeedbackGiven(true);
+            addMessage("Thank you so much for your valuable feedback! It helps us improve our service.", 'assistant');
+            return;
+          }
         }
         
         // Handle other post-assessment questions

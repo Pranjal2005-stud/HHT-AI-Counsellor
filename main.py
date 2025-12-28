@@ -6,7 +6,7 @@ import uuid
 from state import ConversationState, ConversationStage
 from state_controller import StateController
 from engine import update_score, should_repeat
-from gemini_service import rephrase
+from gemini_service import rephrase, generate_personalized_response, enhance_feedback_response
 
 app = FastAPI()
 
@@ -36,6 +36,10 @@ class PersonalInfo(BaseModel):
     name: str
     location: str
     education: str
+
+class FeedbackRequest(BaseModel):
+    session_id: str
+    feedback: str
 
 class AnswerRequest(BaseModel):
     session_id: str
@@ -90,8 +94,17 @@ def submit_answer(request: AnswerRequest):
             state.question_count = 0
             state.score = 0
             state.answers = []
+            
+            # Generate personalized domain selection response
+            user_name = getattr(state, 'user_name', 'there')
+            personalized_msg = generate_personalized_response(
+                user_name, 
+                matched_domain, 
+                f"User just selected {matched_domain} for skill assessment"
+            )
+            
             return {
-                "message": f"Great! Let's assess your {matched_domain} skills.",
+                "message": personalized_msg,
                 "question": f"Do you have experience with {matched_domain} development?",
                 "completed": False
             }
@@ -381,6 +394,22 @@ def _generate_detailed_results(state, questions):
             "explanation": f"Based on your {state.selected_domain} assessment, you scored {state.score} out of 6 questions correctly ({percentage:.0f}%). {level_desc} Focus on the recommended topics and try building the suggested projects to enhance your skills."
         }
     }
+
+@app.post("/feedback")
+def submit_feedback(request: FeedbackRequest):
+    if request.session_id not in sessions:
+        return {"message": "Thank you for your feedback!"}
+    
+    state = sessions[request.session_id]
+    user_name = getattr(state, 'user_name', 'there')
+    
+    # Generate AI-enhanced feedback response
+    ai_response = enhance_feedback_response(request.feedback, user_name)
+    
+    # Log feedback for improvement (optional)
+    print(f"Feedback from {user_name}: {request.feedback}")
+    
+    return {"message": ai_response}
 
 @app.post("/chat")
 def chat(request: AnswerRequest):
