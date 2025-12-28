@@ -1,12 +1,11 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
 import uuid
+import json
 
 from state import ConversationState, ConversationStage
 from state_controller import StateController
 from engine import update_score, should_repeat
-from gemini_service import rephrase, generate_personalized_response, enhance_feedback_response
 
 app = FastAPI()
 
@@ -23,28 +22,6 @@ app.add_middleware(
 sessions = {}
 controller = StateController()
 
-class Answer(BaseModel):
-    message: str
-
-class StartResponse(BaseModel):
-    session_id: str
-    message: str
-    question: str
-
-class PersonalInfo(BaseModel):
-    session_id: str
-    name: str
-    location: str
-    education: str
-
-class FeedbackRequest(BaseModel):
-    session_id: str
-    feedback: str
-
-class AnswerRequest(BaseModel):
-    session_id: str
-    answer: str
-
 @app.post("/start")
 def start_conversation():
     session_id = str(uuid.uuid4())
@@ -56,12 +33,12 @@ def start_conversation():
     }
 
 @app.post("/personal-info")
-def submit_personal_info(request: PersonalInfo):
-    if request.session_id in sessions:
-        state = sessions[request.session_id]
-        state.user_name = request.name
-        state.user_location = request.location
-        state.user_education = request.education
+def submit_personal_info(request: dict):
+    if request.get("session_id") in sessions:
+        state = sessions[request["session_id"]]
+        state.user_name = request.get("name")
+        state.user_location = request.get("location")
+        state.user_education = request.get("education")
     
     return {
         "message": "Thanks for the information!",
@@ -69,18 +46,18 @@ def submit_personal_info(request: PersonalInfo):
     }
 
 @app.post("/answer")
-def submit_answer(request: AnswerRequest):
-    if request.session_id not in sessions:
+def submit_answer(request: dict):
+    if request.get("session_id") not in sessions:
         return {"message": "Session not found"}
     
-    state = sessions[request.session_id]
+    state = sessions[request["session_id"]]
     
     # Valid domains
     valid_domains = ['backend', 'frontend', 'data analytics', 'machine learning', 'devops', 'cybersecurity', 'data engineering', 'algorithms']
     
     # If no domain selected yet, handle domain selection
     if not hasattr(state, 'selected_domain') or not state.selected_domain:
-        user_domain = request.answer.lower().strip()
+        user_domain = request["answer"].lower().strip()
         
         # Check if user input matches any valid domain
         matched_domain = None
@@ -95,13 +72,9 @@ def submit_answer(request: AnswerRequest):
             state.score = 0
             state.answers = []
             
-            # Generate personalized domain selection response
+            # Simple personalized response without AI
             user_name = getattr(state, 'user_name', 'there')
-            personalized_msg = generate_personalized_response(
-                user_name, 
-                matched_domain, 
-                f"User just selected {matched_domain} for skill assessment"
-            )
+            personalized_msg = f"Excellent choice, {user_name}! Let's assess your {matched_domain} skills."
             
             return {
                 "message": personalized_msg,
@@ -122,7 +95,7 @@ def submit_answer(request: AnswerRequest):
         state.answers = []
     
     # Process current answer
-    user_answer = request.answer.lower().strip()
+    user_answer = request["answer"].lower().strip()
     is_yes = user_answer in ['yes', 'y', 'yeah', 'yep', 'sure', 'definitely']
     is_no = user_answer in ['no', 'n', 'nope', 'never', 'not really']
     
@@ -396,28 +369,28 @@ def _generate_detailed_results(state, questions):
     }
 
 @app.post("/feedback")
-def submit_feedback(request: FeedbackRequest):
-    if request.session_id not in sessions:
+def submit_feedback(request: dict):
+    if request.get("session_id") not in sessions:
         return {"message": "Thank you for your feedback!"}
     
-    state = sessions[request.session_id]
+    state = sessions[request["session_id"]]
     user_name = getattr(state, 'user_name', 'there')
     
-    # Generate AI-enhanced feedback response
-    ai_response = enhance_feedback_response(request.feedback, user_name)
+    # Simple feedback response without AI
+    response_msg = f"Thank you so much for your valuable feedback, {user_name}! It helps us improve our service."
     
     # Log feedback for improvement (optional)
-    print(f"Feedback from {user_name}: {request.feedback}")
+    print(f"Feedback from {user_name}: {request['feedback']}")
     
-    return {"message": ai_response}
+    return {"message": response_msg}
 
 @app.post("/chat")
-def chat(request: AnswerRequest):
-    if request.session_id not in sessions:
+def chat(request: dict):
+    if request.get("session_id") not in sessions:
         return {"message": "Session not found"}
     
-    state = sessions[request.session_id]
-    user_message = request.answer.lower().strip()
+    state = sessions[request["session_id"]]
+    user_message = request["message"].lower().strip()
     
     # Handle improvement questions
     if any(word in user_message for word in ['improve', 'better', 'learn', 'study', 'focus', 'next', 'recommend']):
