@@ -341,7 +341,7 @@ function App() {
     <div className="chat-container">
       <div className="chat-header">
         <div className="header-content">
-          <img src="/logo.png" alt="HHT Logo" className="header-logo" />
+          <img src="/Logo.png" alt="HHT Logo" className="header-logo" />
           <h1 className="header-title">HHT AI Counsellor</h1>
         </div>
         {conversationStarted && (
