@@ -48,9 +48,7 @@ def start_conversation():
     sessions[session_id] = state
     
     return {
-        "session_id": session_id,
-        "message": "Hello! I'm your Tech Skills Counsellor.",
-        "question": "What's your name?"
+        "session_id": session_id
     }
 
 @app.post("/personal-info")

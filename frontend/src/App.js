@@ -11,7 +11,9 @@ function App() {
   const [isAssessmentComplete, setIsAssessmentComplete] = useState(false);
   const [conversationStarted, setConversationStarted] = useState(false);
   const [showDomainButtons, setShowDomainButtons] = useState(false);
+  const [feedbackGiven, setFeedbackGiven] = useState(false);
   const messagesEndRef = useRef(null);
+  const hasInitialized = useRef(false);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -22,10 +24,11 @@ function App() {
   }, [messages, isTyping]);
 
   useEffect(() => {
-    if (!conversationStarted) {
+    if (!hasInitialized.current) {
+      hasInitialized.current = true;
       startConversation();
     }
-  }, [conversationStarted]);
+  }, []);
 
   const addMessage = (content, sender, type = 'text', data = null) => {
     setMessages(prev => [...prev, { content, sender, type, data, timestamp: Date.now() }]);
@@ -35,7 +38,7 @@ function App() {
     try {
       const response = await axios.post(`${API_BASE_URL}/start`);
       setSessionId(response.data.session_id);
-      addMessage("Hello! I'm your HHT AI Counsellor. What's your name?", 'assistant');
+      addMessage("Hello! I'm your HHT AI Counsellor. I'm here to assess your technical skills and provide personalized learning recommendations. What's your name?", 'assistant');
       setConversationStarted(true);
     } catch (error) {
       addMessage("Sorry, I'm having trouble connecting. Please make sure the backend server is running.", 'assistant');
@@ -173,7 +176,21 @@ function App() {
   const handleRegularMessage = async (message) => {
     try {
       if (isAssessmentComplete) {
-        // Handle post-assessment questions
+        // Check if this is feedback/suggestion
+        if (!feedbackGiven && (message.toLowerCase().includes('feedback') || 
+            message.toLowerCase().includes('suggestion') || 
+            message.toLowerCase().includes('experience') ||
+            message.length > 10)) { // Assume longer messages are feedback
+          
+          // Store feedback (you can send to backend or log)
+          console.log('User feedback received:', message);
+          
+          setFeedbackGiven(true);
+          addMessage("Thank you so much for your valuable feedback! It helps us improve our service. Feel free to use the restart button to take another assessment or ask more questions.", 'assistant');
+          return;
+        }
+        
+        // Handle other post-assessment questions
         const response = await axios.post(`${API_BASE_URL}/chat`, {
           session_id: sessionId,
           message: message
@@ -190,6 +207,10 @@ function App() {
           addMessage(response.data.message, 'assistant');
           addMessage('', 'assistant', 'assessment', response.data.recommendations);
           addMessage("Feel free to ask me any questions about your results or how to improve your skills!", 'assistant');
+          // Add feedback prompt after a short delay
+          setTimeout(() => {
+            addMessage("How was your experience? Any suggestions or feedback would be greatly appreciated!", 'assistant');
+          }, 2000);
         } else {
           if (response.data.message && response.data.message !== "Got it!") {
             addMessage(response.data.message, 'assistant');
@@ -211,6 +232,9 @@ function App() {
     setIsAssessmentComplete(false);
     setConversationStarted(false);
     setShowDomainButtons(false);
+    setFeedbackGiven(false);
+    hasInitialized.current = false;
+    startConversation();
   };
 
   const handleKeyPress = (e) => {
