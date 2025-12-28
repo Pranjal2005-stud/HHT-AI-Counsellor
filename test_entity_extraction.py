@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+
 """
 Test script for entity extraction and persistence system
 Demonstrates how the system extracts and stores personal details
@@ -32,11 +32,12 @@ def test_entity_extraction():
     
     for input_text, expected in name_tests:
         state.user_name = None  # Reset
-        result = state.extract_name(input_text)\n        status = "✓" if result == expected else "✗"
+        result = state.extract_name(input_text)
+        status = "✓" if result == expected else "✗"
         extracted = state.user_name if result else "None"
         print(f"{status} '{input_text}' → {extracted}")
     
-    print("\\n2. LOCATION EXTRACTION:")
+    print("\n2. LOCATION EXTRACTION:")
     location_tests = [
         ("New York", True),
         ("I'm from California", True),
@@ -53,7 +54,7 @@ def test_entity_extraction():
         extracted = state.user_location if result else "None"
         print(f"{status} '{input_text}' → {extracted}")
     
-    print("\\n3. EDUCATION EXTRACTION:")
+    print("\n3. EDUCATION EXTRACTION:")
     education_tests = [
         ("Computer Science", True),
         ("I studied Engineering", True),
@@ -75,7 +76,7 @@ def test_conversation_flow():
     engine = TechCounsellorEngine()
     state = ConversationState()
     
-    print("\\n=== CONVERSATION FLOW TEST ===\\n")
+    print("\n=== CONVERSATION FLOW TEST ===\n")
     
     # Simulate conversation flow
     conversation_steps = [
@@ -86,7 +87,7 @@ def test_conversation_flow():
     ]
     
     print(f"Initial stage: {state.stage}")
-    print(f"Initial data: name={state.user_name}, location={state.user_location}, education={state.user_education}\\n")
+    print(f"Initial data: name={state.user_name}, location={state.user_location}, education={state.user_education}\n")
     
     for step_name, user_input, expected_stage in conversation_steps:
         print(f"Step: {step_name}")
@@ -110,7 +111,7 @@ def test_guardrails():
     engine = TechCounsellorEngine()
     state = ConversationState()
     
-    print("\\n=== GUARDRAILS TEST ===\\n")
+    print("\n=== GUARDRAILS TEST ===\n")
     
     # Pre-populate some data
     state.user_name = "Alice"
@@ -133,7 +134,7 @@ def test_guardrails():
 
 def demonstrate_examples():
     """Show example conversation with proper entity extraction"""
-    print("\\n=== EXAMPLE CONVERSATION ===\\n")
+    print("\n=== EXAMPLE CONVERSATION ===\n")
     
     examples = [
         {
@@ -164,7 +165,7 @@ def demonstrate_examples():
         print()
 
 if __name__ == "__main__":
-    print("Testing Entity Extraction and Persistence System\\n")
+    print("Testing Entity Extraction and Persistence System\n")
     
     test_entity_extraction()
     test_conversation_flow()
