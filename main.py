@@ -22,22 +22,18 @@ app.add_middleware(
 )
 
 # Mount static files for React frontend
-if os.path.exists("frontend/build"):
-    app.mount("/static", StaticFiles(directory="frontend/build/static"), name="static")
+app.mount("/static", StaticFiles(directory="frontend/build/static"), name="static")
 
 @app.get("/")
 def serve_frontend():
-    if os.path.exists("frontend/build/index.html"):
-        return FileResponse("frontend/build/index.html")
-    return {"message": "HHT AI Counsellor API"}
+    return FileResponse("frontend/build/index.html")
 
 @app.get("/{path:path}")
 def serve_frontend_routes(path: str):
-    if os.path.exists(f"frontend/build/{path}"):
-        return FileResponse(f"frontend/build/{path}")
-    if os.path.exists("frontend/build/index.html"):
-        return FileResponse("frontend/build/index.html")
-    return {"message": "Route not found"}
+    file_path = f"frontend/build/{path}"
+    if os.path.exists(file_path) and os.path.isfile(file_path):
+        return FileResponse(file_path)
+    return FileResponse("frontend/build/index.html")
 
 # Store sessions
 sessions = {}
