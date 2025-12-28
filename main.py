@@ -1,7 +1,10 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 import uuid
 import json
+import os
 
 from state import ConversationState, ConversationStage
 from state_controller import StateController
@@ -12,11 +15,29 @@ app = FastAPI()
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Mount static files for React frontend
+if os.path.exists("frontend/build"):
+    app.mount("/static", StaticFiles(directory="frontend/build/static"), name="static")
+
+@app.get("/")
+def serve_frontend():
+    if os.path.exists("frontend/build/index.html"):
+        return FileResponse("frontend/build/index.html")
+    return {"message": "HHT AI Counsellor API"}
+
+@app.get("/{path:path}")
+def serve_frontend_routes(path: str):
+    if os.path.exists(f"frontend/build/{path}"):
+        return FileResponse(f"frontend/build/{path}")
+    if os.path.exists("frontend/build/index.html"):
+        return FileResponse("frontend/build/index.html")
+    return {"message": "Route not found"}
 
 # Store sessions
 sessions = {}
