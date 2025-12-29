@@ -405,3 +405,136 @@ body {
   margin: 8px 0;
   border-left: 4px solid #c33;
 }
+
+.roadmap-buttons {
+  display: flex;
+  gap: 12px;
+  margin: 16px 0;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.roadmap-button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 25px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  min-width: 120px;
+}
+
+.roadmap-button.yes {
+  background: #1e3c72;
+  color: #ffd700;
+}
+
+.roadmap-button.yes:hover {
+  background: #2a5298;
+  transform: translateY(-1px);
+}
+
+.roadmap-button.no {
+  background: #f5f5f5;
+  color: #666;
+  border: 2px solid #ddd;
+}
+
+.roadmap-button.no:hover {
+  background: #e9ecef;
+  border-color: #adb5bd;
+}
+
+.roadmap-result {
+  background: #f8f9fa;
+  color: #333;
+  border: 1px solid #e9ecef;
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 12px;
+}
+
+.roadmap-result h3 {
+  color: #1e3c72;
+  margin-bottom: 20px;
+  text-align: center;
+  font-size: 18px;
+}
+
+.roadmap-week {
+  background: white;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+  border-left: 4px solid #ffd700;
+}
+
+.roadmap-week h4 {
+  color: #1e3c72;
+  margin-bottom: 12px;
+  font-size: 16px;
+}
+
+.roadmap-week ul {
+  list-style: none;
+  padding: 0;
+}
+
+.roadmap-week li {
+  background: #f8f9fa;
+  padding: 8px 12px;
+  margin-bottom: 6px;
+  border-radius: 6px;
+  border-left: 3px solid #1e3c72;
+  font-size: 14px;
+  color: #333;
+}
+
+.roadmap-week li:last-child {
+  margin-bottom: 0;
+}
+
+.docs-links {
+  background: #f8f9fa;
+  color: #333;
+  border: 1px solid #e9ecef;
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 12px;
+}
+
+.docs-links h4 {
+  color: #1e3c72;
+  margin-bottom: 16px;
+  font-size: 16px;
+}
+
+.docs-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.doc-link {
+  display: inline-block;
+  background: #1e3c72;
+  color: #ffd700;
+  padding: 10px 16px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.3s;
+  border: 2px solid #1e3c72;
+}
+
+.doc-link:hover {
+  background: #2a5298;
+  border-color: #2a5298;
+  transform: translateY(-1px);
+}
+
+.doc-link:visited {
+  color: #ffd700;
+}

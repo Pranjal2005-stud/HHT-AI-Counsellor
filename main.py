@@ -369,6 +369,202 @@ def _generate_detailed_results(state, questions):
         }
     }
 
+@app.post("/roadmap")
+def get_roadmap(request: dict):
+    if request.get("session_id") not in sessions:
+        return {"message": "Session not found"}
+    
+    state = sessions[request["session_id"]]
+    domain = getattr(state, 'selected_domain', 'frontend')
+    
+    # 5-week roadmaps for each domain
+    roadmaps = {
+        'frontend': {
+            'week1': {
+                'title': 'Week 1 – Basics',
+                'topics': ['HTML5 (semantic tags, forms)', 'CSS3 (box model, flexbox, basics of grid)', 'Build 2 static pages']
+            },
+            'week2': {
+                'title': 'Week 2 – Responsive UI',
+                'topics': ['Advanced CSS (grid, media queries)', 'Mobile-first design', 'One fully responsive website']
+            },
+            'week3': {
+                'title': 'Week 3 – JavaScript Core',
+                'topics': ['JS basics (variables, loops, functions)', 'DOM manipulation, events', 'Build small interactive apps (todo, calculator)']
+            },
+            'week4': {
+                'title': 'Week 4 – Modern Frontend',
+                'topics': ['Git & GitHub', 'React basics (components, props, state)', 'One React mini project']
+            },
+            'week5': {
+                'title': 'Week 5 – Polishing',
+                'topics': ['APIs & fetch', 'Basic performance + clean UI', 'Final project + deploy (Netlify/Vercel)']
+            }
+        },
+        'backend': {
+            'week1': {
+                'title': 'Week 1 – Server Fundamentals',
+                'topics': ['HTTP protocols & REST principles', 'Node.js/Python basics', 'Build simple API endpoints']
+            },
+            'week2': {
+                'title': 'Week 2 – Database Integration',
+                'topics': ['SQL basics & database design', 'Connect API to database', 'CRUD operations implementation']
+            },
+            'week3': {
+                'title': 'Week 3 – Authentication & Security',
+                'topics': ['User authentication systems', 'JWT tokens & sessions', 'Password hashing & validation']
+            },
+            'week4': {
+                'title': 'Week 4 – Advanced Features',
+                'topics': ['File uploads & processing', 'Email services integration', 'API documentation with Swagger']
+            },
+            'week5': {
+                'title': 'Week 5 – Deployment & Scaling',
+                'topics': ['Cloud deployment (AWS/Heroku)', 'Environment configuration', 'Basic monitoring & logging']
+            }
+        },
+        'data analytics': {
+            'week1': {
+                'title': 'Week 1 – Data Foundations',
+                'topics': ['SQL fundamentals & queries', 'Excel/Google Sheets mastery', 'Basic statistical concepts']
+            },
+            'week2': {
+                'title': 'Week 2 – Python for Data',
+                'topics': ['Python basics & Pandas', 'Data cleaning & preprocessing', 'Jupyter notebook workflows']
+            },
+            'week3': {
+                'title': 'Week 3 – Visualization & Analysis',
+                'topics': ['Matplotlib & Seaborn charts', 'Statistical analysis techniques', 'Hypothesis testing basics']
+            },
+            'week4': {
+                'title': 'Week 4 – Business Intelligence',
+                'topics': ['Tableau/Power BI dashboards', 'KPI identification & tracking', 'Interactive report creation']
+            },
+            'week5': {
+                'title': 'Week 5 – Real-world Projects',
+                'topics': ['End-to-end analysis project', 'Presentation & storytelling', 'Portfolio development']
+            }
+        },
+        'machine learning': {
+            'week1': {
+                'title': 'Week 1 – ML Fundamentals',
+                'topics': ['Python & NumPy/Pandas', 'Supervised vs Unsupervised learning', 'Basic linear regression']
+            },
+            'week2': {
+                'title': 'Week 2 – Core Algorithms',
+                'topics': ['Classification algorithms', 'Decision trees & Random Forest', 'Model evaluation metrics']
+            },
+            'week3': {
+                'title': 'Week 3 – Data Preprocessing',
+                'topics': ['Feature engineering techniques', 'Handling missing data', 'Cross-validation methods']
+            },
+            'week4': {
+                'title': 'Week 4 – Advanced Models',
+                'topics': ['Neural networks basics', 'Scikit-learn & TensorFlow', 'Hyperparameter tuning']
+            },
+            'week5': {
+                'title': 'Week 5 – Deployment & MLOps',
+                'topics': ['Model deployment strategies', 'API creation for ML models', 'Monitoring model performance']
+            }
+        },
+        'devops': {
+            'week1': {
+                'title': 'Week 1 – Version Control & CI/CD',
+                'topics': ['Git advanced workflows', 'GitHub Actions basics', 'Automated testing setup']
+            },
+            'week2': {
+                'title': 'Week 2 – Containerization',
+                'topics': ['Docker fundamentals', 'Container orchestration', 'Multi-stage builds']
+            },
+            'week3': {
+                'title': 'Week 3 – Cloud Infrastructure',
+                'topics': ['AWS/Azure basics', 'Infrastructure as Code', 'Terraform fundamentals']
+            },
+            'week4': {
+                'title': 'Week 4 – Monitoring & Security',
+                'topics': ['Application monitoring', 'Log aggregation systems', 'Security best practices']
+            },
+            'week5': {
+                'title': 'Week 5 – Production Deployment',
+                'topics': ['Kubernetes basics', 'Load balancing & scaling', 'Disaster recovery planning']
+            }
+        },
+        'cybersecurity': {
+            'week1': {
+                'title': 'Week 1 – Security Fundamentals',
+                'topics': ['CIA Triad & risk assessment', 'Network security basics', 'Common attack vectors']
+            },
+            'week2': {
+                'title': 'Week 2 – Ethical Hacking',
+                'topics': ['Penetration testing basics', 'Vulnerability scanning tools', 'OWASP Top 10']
+            },
+            'week3': {
+                'title': 'Week 3 – Network Security',
+                'topics': ['Firewall configuration', 'Intrusion detection systems', 'Network monitoring']
+            },
+            'week4': {
+                'title': 'Week 4 – Incident Response',
+                'topics': ['Security incident handling', 'Digital forensics basics', 'Malware analysis']
+            },
+            'week5': {
+                'title': 'Week 5 – Compliance & Governance',
+                'topics': ['Security frameworks (ISO 27001)', 'Compliance auditing', 'Security awareness training']
+            }
+        },
+        'data engineering': {
+            'week1': {
+                'title': 'Week 1 – Data Pipeline Basics',
+                'topics': ['ETL concepts & design', 'Python for data processing', 'Database fundamentals']
+            },
+            'week2': {
+                'title': 'Week 2 – Big Data Technologies',
+                'topics': ['Apache Spark basics', 'Distributed computing concepts', 'Data formats (Parquet, Avro)']
+            },
+            'week3': {
+                'title': 'Week 3 – Cloud Data Platforms',
+                'topics': ['AWS/GCP data services', 'Data lakes vs warehouses', 'Serverless data processing']
+            },
+            'week4': {
+                'title': 'Week 4 – Stream Processing',
+                'topics': ['Real-time data processing', 'Apache Kafka basics', 'Event-driven architectures']
+            },
+            'week5': {
+                'title': 'Week 5 – Data Quality & Monitoring',
+                'topics': ['Data validation frameworks', 'Pipeline monitoring', 'Data governance practices']
+            }
+        },
+        'algorithms': {
+            'week1': {
+                'title': 'Week 1 – Data Structures',
+                'topics': ['Arrays, Linked Lists, Stacks, Queues', 'Time & Space complexity', 'Basic problem solving']
+            },
+            'week2': {
+                'title': 'Week 2 – Sorting & Searching',
+                'topics': ['Sorting algorithms comparison', 'Binary search variations', 'Hash tables & applications']
+            },
+            'week3': {
+                'title': 'Week 3 – Trees & Graphs',
+                'topics': ['Binary trees & traversals', 'Graph algorithms (BFS, DFS)', 'Tree-based problems']
+            },
+            'week4': {
+                'title': 'Week 4 – Dynamic Programming',
+                'topics': ['DP concepts & patterns', 'Memoization vs tabulation', 'Classic DP problems']
+            },
+            'week5': {
+                'title': 'Week 5 – Advanced Topics',
+                'topics': ['Greedy algorithms', 'Backtracking techniques', 'Competitive programming practice']
+            }
+        }
+    }
+    
+    roadmap = roadmaps.get(domain, roadmaps['frontend'])
+    
+    return {
+        "message": f"Here's your personalized 5-week {domain.title()} roadmap:",
+        "roadmap": roadmap,
+        "domain": domain.title()
+    }
+
 @app.post("/feedback")
 def submit_feedback(request: dict):
     if request.get("session_id") not in sessions:
@@ -376,14 +572,85 @@ def submit_feedback(request: dict):
     
     state = sessions[request["session_id"]]
     user_name = getattr(state, 'user_name', 'there')
+    domain = getattr(state, 'selected_domain', 'frontend')
     
-    # Simple feedback response without AI
-    response_msg = f"Thank you so much for your valuable feedback, {user_name}! It helps us improve our service."
+    # Domain-specific documentation links
+    domain_docs = {
+        'frontend': {
+            'message': f"Thank you so much for your valuable feedback, {user_name}! For further learning, I recommend checking these official resources:",
+            'docs': [
+                {'title': 'MDN Web Docs', 'url': 'https://developer.mozilla.org/en-US/'},
+                {'title': 'React Documentation', 'url': 'https://react.dev/'},
+                {'title': 'CSS-Tricks', 'url': 'https://css-tricks.com/'}
+            ]
+        },
+        'backend': {
+            'message': f"Thank you so much for your valuable feedback, {user_name}! For further learning, I recommend checking these official resources:",
+            'docs': [
+                {'title': 'FastAPI Documentation', 'url': 'https://fastapi.tiangolo.com/'},
+                {'title': 'Node.js Documentation', 'url': 'https://nodejs.org/en/docs/'},
+                {'title': 'PostgreSQL Documentation', 'url': 'https://www.postgresql.org/docs/'}
+            ]
+        },
+        'data analytics': {
+            'message': f"Thank you so much for your valuable feedback, {user_name}! For further learning, I recommend checking these official resources:",
+            'docs': [
+                {'title': 'Pandas Documentation', 'url': 'https://pandas.pydata.org/docs/'},
+                {'title': 'Tableau Learning', 'url': 'https://www.tableau.com/learn'},
+                {'title': 'SQL Tutorial - W3Schools', 'url': 'https://www.w3schools.com/sql/'}
+            ]
+        },
+        'machine learning': {
+            'message': f"Thank you so much for your valuable feedback, {user_name}! For further learning, I recommend checking these official resources:",
+            'docs': [
+                {'title': 'Scikit-learn Documentation', 'url': 'https://scikit-learn.org/stable/'},
+                {'title': 'TensorFlow Documentation', 'url': 'https://www.tensorflow.org/learn'},
+                {'title': 'PyTorch Documentation', 'url': 'https://pytorch.org/docs/stable/index.html'}
+            ]
+        },
+        'devops': {
+            'message': f"Thank you so much for your valuable feedback, {user_name}! For further learning, I recommend checking these official resources:",
+            'docs': [
+                {'title': 'Docker Documentation', 'url': 'https://docs.docker.com/'},
+                {'title': 'Kubernetes Documentation', 'url': 'https://kubernetes.io/docs/home/'},
+                {'title': 'AWS Documentation', 'url': 'https://docs.aws.amazon.com/'}
+            ]
+        },
+        'cybersecurity': {
+            'message': f"Thank you so much for your valuable feedback, {user_name}! For further learning, I recommend checking these official resources:",
+            'docs': [
+                {'title': 'OWASP Foundation', 'url': 'https://owasp.org/'},
+                {'title': 'NIST Cybersecurity Framework', 'url': 'https://www.nist.gov/cyberframework'},
+                {'title': 'SANS Institute', 'url': 'https://www.sans.org/white-papers/'}
+            ]
+        },
+        'data engineering': {
+            'message': f"Thank you so much for your valuable feedback, {user_name}! For further learning, I recommend checking these official resources:",
+            'docs': [
+                {'title': 'Apache Spark Documentation', 'url': 'https://spark.apache.org/docs/latest/'},
+                {'title': 'Apache Kafka Documentation', 'url': 'https://kafka.apache.org/documentation/'},
+                {'title': 'Airflow Documentation', 'url': 'https://airflow.apache.org/docs/'}
+            ]
+        },
+        'algorithms': {
+            'message': f"Thank you so much for your valuable feedback, {user_name}! For further learning, I recommend checking these official resources:",
+            'docs': [
+                {'title': 'LeetCode', 'url': 'https://leetcode.com/'},
+                {'title': 'GeeksforGeeks', 'url': 'https://www.geeksforgeeks.org/'},
+                {'title': 'Algorithm Visualizer', 'url': 'https://algorithm-visualizer.org/'}
+            ]
+        }
+    }
+    
+    domain_info = domain_docs.get(domain, domain_docs['frontend'])
     
     # Log feedback for improvement (optional)
     print(f"Feedback from {user_name}: {request['feedback']}")
     
-    return {"message": response_msg}
+    return {
+        "message": domain_info['message'],
+        "docs": domain_info['docs']
+    }
 
 @app.post("/chat")
 def chat(request: dict):

@@ -12,6 +12,8 @@ function App() {
   const [conversationStarted, setConversationStarted] = useState(false);
   const [showDomainButtons, setShowDomainButtons] = useState(false);
   const [feedbackGiven, setFeedbackGiven] = useState(false);
+  const [showRoadmapOption, setShowRoadmapOption] = useState(false);
+  const [roadmapData, setRoadmapData] = useState(null);
   const messagesEndRef = useRef(null);
   const hasInitialized = useRef(false);
 
@@ -176,6 +178,18 @@ function App() {
   const handleRegularMessage = async (message) => {
     try {
       if (isAssessmentComplete) {
+        // Check if this is a roadmap response when roadmap option is shown
+        if (showRoadmapOption) {
+          const lowerMessage = message.toLowerCase().trim();
+          const isYes = ['yes', 'y', 'yeah', 'yep', 'sure', 'definitely', 'ok', 'okay'].includes(lowerMessage);
+          const isNo = ['no', 'n', 'nope', 'never', 'not really', 'nah'].includes(lowerMessage);
+          
+          if (isYes || isNo) {
+            handleRoadmapRequest(isYes);
+            return;
+          }
+        }
+        
         // Check if this is feedback/suggestion
         if (!feedbackGiven && (message.toLowerCase().includes('feedback') || 
             message.toLowerCase().includes('suggestion') || 
@@ -191,6 +205,12 @@ function App() {
             
             setFeedbackGiven(true);
             addMessage(response.data.message, 'assistant');
+            
+            // Add documentation links if provided
+            if (response.data.docs && response.data.docs.length > 0) {
+              addMessage('', 'assistant', 'docs', response.data.docs);
+            }
+            
             return;
           } catch (error) {
             // Fallback response if API fails
@@ -217,10 +237,12 @@ function App() {
           addMessage(response.data.message, 'assistant');
           addMessage('', 'assistant', 'assessment', response.data.recommendations);
           addMessage("Feel free to ask me any questions about your results or how to improve your skills!", 'assistant');
-          // Add feedback prompt after a short delay
+          
+          // Show roadmap option
           setTimeout(() => {
-            addMessage("How was your experience? Any suggestions or feedback would be greatly appreciated!", 'assistant');
-          }, 2000);
+            setShowRoadmapOption(true);
+            addMessage("Would you like a detailed 5-week roadmap for your domain?", 'assistant', 'roadmap-option');
+          }, 1000);
         } else {
           if (response.data.message && response.data.message !== "Got it!") {
             addMessage(response.data.message, 'assistant');
@@ -235,6 +257,40 @@ function App() {
     }
   };
 
+  const handleRoadmapRequest = async (wantsRoadmap) => {
+    setShowRoadmapOption(false);
+    
+    if (wantsRoadmap) {
+      addMessage("Yes, I'd like a roadmap", 'user');
+      setIsTyping(true);
+      
+      try {
+        const response = await axios.post(`${API_BASE_URL}/roadmap`, {
+          session_id: sessionId
+        });
+        
+        setRoadmapData(response.data.roadmap);
+        addMessage(response.data.message, 'assistant');
+        addMessage('', 'assistant', 'roadmap', response.data);
+        
+        // Add feedback prompt after roadmap
+        setTimeout(() => {
+          addMessage("How was your experience? Any suggestions or feedback would be greatly appreciated!", 'assistant');
+        }, 1000);
+      } catch (error) {
+        addMessage("I had trouble generating your roadmap. Please try again later.", 'assistant');
+      } finally {
+        setIsTyping(false);
+      }
+    } else {
+      addMessage("No, I'll continue without a roadmap", 'user');
+      // Add feedback prompt directly
+      setTimeout(() => {
+        addMessage("How was your experience? Any suggestions or feedback would be greatly appreciated!", 'assistant');
+      }, 500);
+    }
+  };
+
   const restartConversation = () => {
     setSessionId(null);
     setMessages([]);
@@ -243,6 +299,8 @@ function App() {
     setConversationStarted(false);
     setShowDomainButtons(false);
     setFeedbackGiven(false);
+    setShowRoadmapOption(false);
+    setRoadmapData(null);
     hasInitialized.current = false;
     startConversation();
   };
@@ -312,6 +370,55 @@ function App() {
       );
     }
 
+    if (message.type === 'roadmap') {
+      return (
+        <div key={index} className="message assistant">
+          <div className="message-avatar">AI</div>
+          <div className="message-content">
+            <div className="roadmap-result">
+              <h3>5-Week {message.data.domain} Learning Roadmap</h3>
+              {Object.entries(message.data.roadmap).map(([week, content]) => (
+                <div key={week} className="roadmap-week">
+                  <h4>{content.title}</h4>
+                  <ul>
+                    {content.topics.map((topic, i) => (
+                      <li key={i}>{topic}</li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    if (message.type === 'docs') {
+      return (
+        <div key={index} className="message assistant">
+          <div className="message-avatar">AI</div>
+          <div className="message-content">
+            <div className="docs-links">
+              <h4>📚 Official Documentation & Resources:</h4>
+              <div className="docs-list">
+                {message.data.map((doc, i) => (
+                  <a 
+                    key={i} 
+                    href={doc.url} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="doc-link"
+                  >
+                    {doc.title} →
+                  </a>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
     return (
       <div key={index} className={`message ${message.sender}`}>
         <div className="message-avatar">
@@ -332,6 +439,22 @@ function App() {
               ))}
             </div>
           )}
+          {message.type === 'roadmap-option' && showRoadmapOption && index === messages.length - 1 && (
+            <div className="roadmap-buttons">
+              <button
+                className="roadmap-button yes"
+                onClick={() => handleRoadmapRequest(true)}
+              >
+                Yes, show me the roadmap
+              </button>
+              <button
+                className="roadmap-button no"
+                onClick={() => handleRoadmapRequest(false)}
+              >
+                No, continue without roadmap
+              </button>
+            </div>
+          )}
         </div>
       </div>
     );
@@ -341,7 +464,7 @@ function App() {
     <div className="chat-container">
       <div className="chat-header">
         <div className="header-content">
-          <img src="/logo.png" alt="HHT Logo" className="header-logo" />
+          <img src="/Logo.png" alt="HHT Logo" className="header-logo" />
           <h1 className="header-title">HHT AI Counsellor</h1>
         </div>
         {conversationStarted && (
