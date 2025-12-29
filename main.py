@@ -659,6 +659,51 @@ def chat(request: dict):
     
     state = sessions[request["session_id"]]
     user_message = request["message"].lower().strip()
+    domain = getattr(state, 'selected_domain', 'frontend')
+    
+    # Domain-specific documentation links
+    domain_docs = {
+        'frontend': [
+            {'title': 'MDN Web Docs', 'url': 'https://developer.mozilla.org/en-US/'},
+            {'title': 'React Documentation', 'url': 'https://react.dev/'},
+            {'title': 'CSS-Tricks', 'url': 'https://css-tricks.com/'}
+        ],
+        'backend': [
+            {'title': 'FastAPI Documentation', 'url': 'https://fastapi.tiangolo.com/'},
+            {'title': 'Node.js Documentation', 'url': 'https://nodejs.org/en/docs/'},
+            {'title': 'PostgreSQL Documentation', 'url': 'https://www.postgresql.org/docs/'}
+        ],
+        'data analytics': [
+            {'title': 'Pandas Documentation', 'url': 'https://pandas.pydata.org/docs/'},
+            {'title': 'Tableau Learning', 'url': 'https://www.tableau.com/learn'},
+            {'title': 'SQL Tutorial - W3Schools', 'url': 'https://www.w3schools.com/sql/'}
+        ],
+        'machine learning': [
+            {'title': 'Scikit-learn Documentation', 'url': 'https://scikit-learn.org/stable/'},
+            {'title': 'TensorFlow Documentation', 'url': 'https://www.tensorflow.org/learn'},
+            {'title': 'PyTorch Documentation', 'url': 'https://pytorch.org/docs/stable/index.html'}
+        ],
+        'devops': [
+            {'title': 'Docker Documentation', 'url': 'https://docs.docker.com/'},
+            {'title': 'Kubernetes Documentation', 'url': 'https://kubernetes.io/docs/home/'},
+            {'title': 'AWS Documentation', 'url': 'https://docs.aws.amazon.com/'}
+        ],
+        'cybersecurity': [
+            {'title': 'OWASP Foundation', 'url': 'https://owasp.org/'},
+            {'title': 'NIST Cybersecurity Framework', 'url': 'https://www.nist.gov/cyberframework'},
+            {'title': 'SANS Institute', 'url': 'https://www.sans.org/white-papers/'}
+        ],
+        'data engineering': [
+            {'title': 'Apache Spark Documentation', 'url': 'https://spark.apache.org/docs/latest/'},
+            {'title': 'Apache Kafka Documentation', 'url': 'https://kafka.apache.org/documentation/'},
+            {'title': 'Airflow Documentation', 'url': 'https://airflow.apache.org/docs/'}
+        ],
+        'algorithms': [
+            {'title': 'LeetCode', 'url': 'https://leetcode.com/'},
+            {'title': 'GeeksforGeeks', 'url': 'https://www.geeksforgeeks.org/'},
+            {'title': 'Algorithm Visualizer', 'url': 'https://algorithm-visualizer.org/'}
+        ]
+    }
     
     # Handle improvement questions
     if any(word in user_message for word in ['improve', 'better', 'learn', 'study', 'focus', 'next', 'recommend']):
@@ -686,16 +731,19 @@ def chat(request: dict):
             tips = domain_tips.get(state.selected_domain, {}).get(level, [f'{state.selected_domain} fundamentals', 'Best practices', 'Hands-on projects'])
             
             return {
-                "message": f"To improve your {state.selected_domain} skills, I recommend focusing on: {', '.join(tips)}. Start with hands-on projects and practice regularly!"
+                "message": f"To improve your {state.selected_domain} skills, I recommend focusing on: {', '.join(tips)}. Start with hands-on projects and practice regularly!",
+                "docs": domain_docs.get(domain, domain_docs['frontend'])
             }
     
-    # Handle general questions
-    if any(word in user_message for word in ['how', 'what', 'why', 'when', 'where']):
+    # Handle general questions with documentation links
+    if any(word in user_message for word in ['how', 'what', 'why', 'when', 'where', 'help', 'guide', 'tutorial']):
         return {
-            "message": "That's a great question! For specific technical guidance, I recommend checking official documentation, online tutorials, or joining developer communities. Is there a particular area you'd like to focus on?"
+            "message": "That's a great question! For specific technical guidance, I recommend checking these official resources and documentation:",
+            "docs": domain_docs.get(domain, domain_docs['frontend'])
         }
     
-    # Default response
+    # Default response with documentation links
     return {
-        "message": "Thanks for your question! I'm here to help with your learning journey. Feel free to ask about improving your skills, learning resources, or career advice."
+        "message": "Thanks for your question! I'm here to help with your learning journey. Check out these official resources for detailed guidance:",
+        "docs": domain_docs.get(domain, domain_docs['frontend'])
     }
