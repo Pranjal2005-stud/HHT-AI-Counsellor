@@ -8,7 +8,7 @@ from state import ConversationState, ConversationStage
 from state_controller import StateController
 from engine import update_score, should_repeat
 
-app = FastAPI()
+app = FastAPI(title="HHT AI Counsellor API", version="1.0.0")
 
 # Add CORS middleware
 app.add_middleware(
