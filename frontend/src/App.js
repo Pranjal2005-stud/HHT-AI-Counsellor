@@ -226,6 +226,11 @@ function App() {
           message: message
         });
         addMessage(response.data.message || response.data.reply, 'assistant');
+        
+        // Add documentation links if provided
+        if (response.data.docs && response.data.docs.length > 0) {
+          addMessage('', 'assistant', 'docs', response.data.docs);
+        }
       } else {
         const response = await axios.post(`${API_BASE_URL}/answer`, {
           session_id: sessionId,
