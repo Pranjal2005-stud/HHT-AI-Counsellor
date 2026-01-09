@@ -206,6 +206,11 @@ def submit_answer(request: dict):
             {"q": "Have you participated in competitive programming?", "exp": "Competitive programming develops problem-solving skills through timed algorithmic challenges. It improves pattern recognition, coding speed, and ability to handle complex problems under pressure."},
             {"q": "Do you understand advanced tree algorithms?", "exp": "Advanced tree algorithms include balanced trees (AVL, Red-Black), segment trees, and trie structures. They enable efficient operations on hierarchical data and specialized query processing."}
         ]
+    } knapsack problem, longest common subsequence, and Fibonacci sequence optimization. Understanding dynamic programming involves recognizing when to apply it, designing state representations, and implementing both top-down (memoization) and bottom-up (tabulation) approaches. This technique is essential for solving many algorithmic challenges efficiently."},
+            {"q": "Do you understand graph algorithms and tree traversals?", "exp": "Graph algorithms and tree traversals are essential for solving problems involving relationships and hierarchical data structures. Graph algorithms include breadth-first search (BFS), depth-first search (DFS), shortest path algorithms (Dijkstra's, Bellman-Ford), and minimum spanning tree algorithms (Kruskal's, Prim's). Tree traversals include in-order, pre-order, and post-order traversals for binary trees. Understanding these concepts involves knowing how to represent graphs and trees, implement traversal algorithms, and apply them to solve real-world problems like social network analysis, route planning, and decision trees."},
+            {"q": "Are you familiar with time and space complexity analysis?", "exp": "Time and space complexity analysis involves evaluating how algorithm performance scales with input size, typically expressed using Big O notation. Time complexity measures how execution time grows with input size, while space complexity measures memory usage growth. Understanding complexity analysis involves recognizing common patterns (O(1), O(log n), O(n), O(n²), O(2ⁿ)), analyzing loops and recursive calls, and comparing algorithm efficiency. This knowledge is crucial for choosing appropriate algorithms, optimizing code performance, and making informed decisions about trade-offs between time and space efficiency in software development."},
+            {"q": "Have you participated in competitive programming or coding contests?", "exp": "Competitive programming involves solving algorithmic problems under time constraints, typically in contests like ACM ICPC, Codeforces, or LeetCode competitions. It requires quick problem analysis, efficient algorithm implementation, and strong debugging skills. Competitive programming helps develop pattern recognition for common problem types, improves coding speed and accuracy, and builds confidence in handling complex algorithmic challenges. Experience in competitive programming demonstrates strong problem-solving abilities and is highly valued by technology companies for technical roles, as it indicates proficiency in algorithms, data structures, and coding under pressure."}
+        ]
     }
     
     # Get questions for current domain and randomly select 6 out of 10
@@ -274,10 +279,82 @@ def _generate_detailed_results(state, questions):
     areas_to_improve = []
     for ans in state.answers:
         if ans["answer"] == "No":
+            # Create a more meaningful explanation
+            topic_explanations = {
+                'frontend': {
+                    'Do you have experience with frontend development?': 'Frontend Development Fundamentals: Learn HTML5, CSS3, and JavaScript basics to build user interfaces.',
+                    'Have you worked with React, Vue, or Angular?': 'Modern JavaScript Frameworks: Master component-based development with popular frameworks.',
+                    'Do you understand responsive design principles?': 'Responsive Web Design: Create websites that work seamlessly across all devices and screen sizes.',
+                    'Are you familiar with CSS preprocessors like Sass or Less?': 'CSS Preprocessors: Use advanced CSS tools for better code organization and maintainability.',
+                    'Have you used build tools like Webpack or Vite?': 'Build Tools & Bundlers: Optimize development workflow with modern build and bundling tools.',
+                    'Do you know about web performance optimization?': 'Web Performance: Implement techniques to make websites faster and more efficient.'
+                },
+                'backend': {
+                    'Do you have experience with backend development?': 'Backend Development Fundamentals: Learn server-side programming, APIs, and database integration.',
+                    'Have you worked with databases like MySQL or PostgreSQL?': 'Database Management: Master SQL databases for data storage and retrieval in applications.',
+                    'Are you familiar with REST API development?': 'API Development: Build RESTful services for communication between applications.',
+                    'Do you understand authentication and authorization?': 'Security & Authentication: Implement secure user authentication and access control systems.',
+                    'Have you used cloud services like AWS or Azure?': 'Cloud Computing: Deploy and scale applications using modern cloud platforms.',
+                    'Do you know about microservices architecture?': 'Microservices Architecture: Design scalable, distributed systems with independent services.'
+                },
+                'data analytics': {
+                    'Do you have experience with data analytics?': 'Data Analytics Fundamentals: Learn statistical analysis, data visualization, and insight generation.',
+                    'Have you worked with SQL for data querying?': 'SQL Mastery: Master database querying and data manipulation for analytics.',
+                    'Are you familiar with data visualization tools like Tableau or Power BI?': 'Data Visualization: Create compelling dashboards and reports using modern BI tools.',
+                    'Do you understand statistical analysis and hypothesis testing?': 'Statistical Analysis: Apply statistical methods and hypothesis testing for data-driven decisions.',
+                    'Have you used Python or R for data analysis?': 'Programming for Analytics: Use Python or R for advanced data analysis and automation.',
+                    'Do you know about data cleaning and preprocessing techniques?': 'Data Preprocessing: Master data cleaning and preparation techniques for quality analysis.'
+                },
+                'machine learning': {
+                    'Do you have experience with machine learning?': 'Machine Learning Fundamentals: Understand algorithms, model training, and prediction systems.',
+                    'Are you familiar with supervised learning algorithms?': 'Supervised Learning: Master classification and regression algorithms for predictive modeling.',
+                    'Have you worked with popular ML libraries like scikit-learn or TensorFlow?': 'ML Libraries & Frameworks: Use industry-standard tools for machine learning implementation.',
+                    'Do you understand model evaluation and validation techniques?': 'Model Evaluation: Learn techniques to assess and validate machine learning model performance.',
+                    'Are you familiar with feature engineering and selection?': 'Feature Engineering: Master the art of creating and selecting relevant features for ML models.',
+                    'Have you deployed machine learning models in production?': 'ML Deployment: Learn to deploy and maintain machine learning models in production environments.'
+                },
+                'devops': {
+                    'Do you have experience with DevOps practices?': 'DevOps Fundamentals: Learn collaboration, automation, and continuous delivery practices.',
+                    'Are you familiar with containerization using Docker?': 'Containerization: Master Docker for application packaging and deployment consistency.',
+                    'Have you worked with cloud platforms like AWS, Azure, or GCP?': 'Cloud Platforms: Deploy and manage applications using major cloud service providers.',
+                    'Do you understand CI/CD pipeline implementation?': 'CI/CD Pipelines: Automate build, test, and deployment processes for faster delivery.',
+                    'Are you familiar with infrastructure as code (IaC) tools?': 'Infrastructure as Code: Manage infrastructure through code using tools like Terraform.',
+                    'Have you implemented monitoring and logging solutions?': 'Monitoring & Logging: Implement comprehensive observability for system health and performance.'
+                },
+                'cybersecurity': {
+                    'Do you have experience with cybersecurity fundamentals?': 'Cybersecurity Fundamentals: Learn security principles, threat assessment, and defense strategies.',
+                    'Are you familiar with network security and firewalls?': 'Network Security: Master network protection, firewalls, and intrusion detection systems.',
+                    'Have you worked with vulnerability assessment and penetration testing?': 'Security Testing: Learn to identify and exploit vulnerabilities through ethical hacking.',
+                    'Do you understand incident response and forensics?': 'Incident Response: Master security incident handling and digital forensics techniques.',
+                    'Are you familiar with security compliance frameworks?': 'Security Compliance: Understand regulatory frameworks and compliance requirements.',
+                    'Have you implemented security awareness and training programs?': 'Security Awareness: Develop programs to educate users about cybersecurity best practices.'
+                },
+                'data engineering': {
+                    'Do you have experience with data engineering?': 'Data Engineering Fundamentals: Learn to build scalable data pipelines and infrastructure.',
+                    'Are you familiar with big data technologies like Hadoop or Spark?': 'Big Data Technologies: Master distributed computing frameworks for large-scale data processing.',
+                    'Have you built ETL/ELT data pipelines?': 'Data Pipelines: Design and implement robust ETL/ELT processes for data transformation.',
+                    'Do you understand data warehousing and data lake concepts?': 'Data Architecture: Learn modern data storage and organization strategies.',
+                    'Are you familiar with stream processing and real-time data?': 'Stream Processing: Handle real-time data streams for immediate insights and responses.',
+                    'Have you worked with cloud data services?': 'Cloud Data Services: Leverage managed cloud services for scalable data solutions.'
+                },
+                'algorithms': {
+                    'Do you have experience with algorithms and data structures?': 'Algorithms & Data Structures: Master fundamental computer science concepts for efficient programming.',
+                    'Are you familiar with sorting and searching algorithms?': 'Sorting & Searching: Learn essential algorithms for data organization and retrieval.',
+                    'Have you solved problems using dynamic programming?': 'Dynamic Programming: Master optimization techniques for complex algorithmic problems.',
+                    'Do you understand graph algorithms and tree traversals?': 'Graph Algorithms: Learn to solve problems involving networks, relationships, and hierarchical data.',
+                    'Are you familiar with time and space complexity analysis?': 'Complexity Analysis: Understand algorithm efficiency and performance optimization.',
+                    'Have you participated in competitive programming or coding contests?': 'Competitive Programming: Develop problem-solving skills through algorithmic challenges and contests.'
+                }
+            }
+            
+            
+            domain_topics = topic_explanations.get(state.selected_domain, {})
+            topic_explanation = domain_topics.get(ans["question"], f"Learn more about: {ans['question'].replace('Do you ', '').replace('Have you ', '').replace('Are you ', '')}")
+            
             areas_to_improve.append({
                 "question": ans["question"],
                 "answer": ans["answer"],
-                "explanation": ans["explanation"]
+                "explanation": topic_explanation
             })
     
     # Domain-specific recommendations
@@ -475,48 +552,66 @@ def get_detailed_roadmap(request: dict):
         },
         'backend': {
             'title': 'Backend Development Roadmap',
-            'description': 'Complete guide to becoming a skilled backend developer',
-            'prerequisites': 'Basic programming knowledge, understanding of web concepts',
-            'duration': '6-8 months with consistent practice',
+            'description': 'Comprehensive path to becoming a skilled backend developer',
+            'prerequisites': 'Basic programming knowledge, understanding of databases',
+            'duration': '8-10 months with consistent practice',
             'steps': [
                 {
                     'step': 1,
-                    'title': 'Server Fundamentals 🖥️',
-                    'duration': '4-6 weeks',
+                    'title': 'Programming Language Mastery 💻',
+                    'duration': '6-8 weeks',
                     'topics': [
-                        'HTTP protocols and REST principles',
-                        'Server-side programming basics',
-                        'API design and development',
-                        'Request/response cycle',
-                        'Status codes and error handling'
+                        'Python/Node.js fundamentals',
+                        'Object-oriented programming concepts',
+                        'Data structures and algorithms',
+                        'File handling and I/O operations',
+                        'Error handling and debugging'
                     ],
                     'resources': [
-                        {'title': 'FastAPI Documentation', 'url': 'https://fastapi.tiangolo.com/'},
+                        {'title': 'Python Official Tutorial', 'url': 'https://docs.python.org/3/tutorial/'},
                         {'title': 'Node.js Documentation', 'url': 'https://nodejs.org/en/docs/'},
-                        {'title': 'REST API Tutorial', 'url': 'https://restfulapi.net/'}
+                        {'title': 'LeetCode Practice', 'url': 'https://leetcode.com/'}
                     ],
-                    'projects': ['Simple REST API', 'CRUD operations server', 'Basic HTTP server']
+                    'projects': ['Command-line calculator', 'File processing utility', 'Basic web scraper']
                 },
                 {
                     'step': 2,
-                    'title': 'Database Integration 🗄️',
-                    'duration': '6-8 weeks',
+                    'title': 'Database Fundamentals 🗄️',
+                    'duration': '4-6 weeks',
                     'topics': [
-                        'SQL fundamentals and advanced queries',
+                        'SQL basics and advanced queries',
                         'Database design and normalization',
-                        'ORM/ODM usage and best practices',
-                        'Connection pooling and optimization',
-                        'Database migrations and versioning'
+                        'PostgreSQL/MySQL administration',
+                        'Indexing and query optimization',
+                        'NoSQL databases (MongoDB)'
                     ],
                     'resources': [
-                        {'title': 'PostgreSQL Documentation', 'url': 'https://www.postgresql.org/docs/'},
-                        {'title': 'SQLAlchemy Tutorial', 'url': 'https://docs.sqlalchemy.org/en/14/tutorial/'},
+                        {'title': 'PostgreSQL Tutorial', 'url': 'https://www.postgresql.org/docs/current/tutorial.html'},
+                        {'title': 'SQL Bolt', 'url': 'https://sqlbolt.com/'},
                         {'title': 'MongoDB University', 'url': 'https://university.mongodb.com/'}
                     ],
-                    'projects': ['User management system', 'E-commerce database', 'Blog with comments system']
+                    'projects': ['Library management system', 'E-commerce database design', 'Data analysis with SQL']
                 },
                 {
                     'step': 3,
+                    'title': 'Web Framework & APIs 🌐',
+                    'duration': '8-10 weeks',
+                    'topics': [
+                        'REST API design principles',
+                        'FastAPI/Express.js framework',
+                        'Request/Response handling',
+                        'Middleware and routing',
+                        'API documentation with Swagger'
+                    ],
+                    'resources': [
+                        {'title': 'FastAPI Documentation', 'url': 'https://fastapi.tiangolo.com/'},
+                        {'title': 'Express.js Guide', 'url': 'https://expressjs.com/en/guide/routing.html'},
+                        {'title': 'REST API Tutorial', 'url': 'https://restfulapi.net/'}
+                    ],
+                    'projects': ['Blog API with CRUD operations', 'User management system', 'File upload service']
+                },
+                {
+                    'step': 4,
                     'title': 'Authentication & Security 🔐',
                     'duration': '4-5 weeks',
                     'topics': [
@@ -527,39 +622,21 @@ def get_detailed_roadmap(request: dict):
                         'API security best practices'
                     ],
                     'resources': [
-                        {'title': 'Auth0 Documentation', 'url': 'https://auth0.com/docs'},
-                        {'title': 'JWT.io', 'url': 'https://jwt.io/introduction'},
-                        {'title': 'OWASP Security Guide', 'url': 'https://owasp.org/www-project-api-security/'}
+                        {'title': 'JWT.io', 'url': 'https://jwt.io/'},
+                        {'title': 'OWASP Security Guide', 'url': 'https://owasp.org/www-project-top-ten/'},
+                        {'title': 'Auth0 Documentation', 'url': 'https://auth0.com/docs'}
                     ],
-                    'projects': ['JWT authentication API', 'OAuth integration', 'Role-based access control']
-                },
-                {
-                    'step': 4,
-                    'title': 'Advanced Backend Features 🚀',
-                    'duration': '6-7 weeks',
-                    'topics': [
-                        'File uploads and processing',
-                        'Email services and notifications',
-                        'Caching strategies (Redis)',
-                        'Background jobs and queues',
-                        'API documentation and testing'
-                    ],
-                    'resources': [
-                        {'title': 'Redis Documentation', 'url': 'https://redis.io/documentation'},
-                        {'title': 'Celery Documentation', 'url': 'https://docs.celeryproject.org/'},
-                        {'title': 'Swagger/OpenAPI', 'url': 'https://swagger.io/docs/'}
-                    ],
-                    'projects': ['File upload service', 'Email notification system', 'Background job processor']
+                    'projects': ['Secure login system', 'Role-based access control', 'OAuth integration']
                 },
                 {
                     'step': 5,
-                    'title': 'Cloud & Deployment ☁️',
-                    'duration': '5-6 weeks',
+                    'title': 'Cloud & DevOps Basics ☁️',
+                    'duration': '6-8 weeks',
                     'topics': [
                         'Cloud platforms (AWS, Azure, GCP)',
                         'Containerization with Docker',
-                        'Environment configuration',
                         'CI/CD pipelines',
+                        'Environment configuration',
                         'Monitoring and logging'
                     ],
                     'resources': [
@@ -567,83 +644,83 @@ def get_detailed_roadmap(request: dict):
                         {'title': 'Docker Documentation', 'url': 'https://docs.docker.com/'},
                         {'title': 'GitHub Actions', 'url': 'https://docs.github.com/en/actions'}
                     ],
-                    'projects': ['Dockerized application', 'AWS deployment', 'CI/CD pipeline setup']
+                    'projects': ['Dockerized application', 'AWS deployment', 'Automated deployment pipeline']
                 },
                 {
                     'step': 6,
-                    'title': 'Scalability & Architecture 📈',
-                    'duration': '6-8 weeks',
+                    'title': 'Advanced Architecture 🏗️',
+                    'duration': '8-10 weeks',
                     'topics': [
                         'Microservices architecture',
+                        'Message queues and event-driven systems',
+                        'Caching strategies (Redis)',
                         'Load balancing and scaling',
-                        'Message queues and event systems',
-                        'Database optimization',
                         'System design principles'
                     ],
                     'resources': [
                         {'title': 'Microservices Patterns', 'url': 'https://microservices.io/patterns/'},
-                        {'title': 'Apache Kafka', 'url': 'https://kafka.apache.org/documentation/'},
+                        {'title': 'Redis Documentation', 'url': 'https://redis.io/documentation'},
                         {'title': 'System Design Primer', 'url': 'https://github.com/donnemartin/system-design-primer'}
                     ],
-                    'projects': ['Microservices system', 'Message queue implementation', 'Scalable API design']
+                    'projects': ['Microservices application', 'Real-time notification system', 'High-availability system']
                 }
             ],
             'career_paths': [
                 'Backend Developer',
-                'Full-Stack Developer',
+                'API Developer',
                 'DevOps Engineer',
                 'System Architect',
-                'API Developer'
+                'Full-Stack Developer'
             ],
             'tips': [
-                'Focus on understanding system design principles',
-                'Practice building scalable and maintainable code',
-                'Learn about database optimization and caching',
-                'Stay updated with cloud technologies',
-                'Understand security best practices'
+                'Focus on writing clean, maintainable code',
+                'Learn database optimization techniques',
+                'Understand system design principles',
+                'Practice with real-world projects',
+                'Stay updated with cloud technologies'
             ]
         },
         'data analytics': {
             'title': 'Data Analytics Roadmap',
-            'description': 'Complete guide to becoming a proficient data analyst',
-            'prerequisites': 'Basic mathematics and statistics knowledge',
-            'duration': '5-7 months with consistent practice',
+            'description': 'Complete guide to becoming a skilled data analyst',
+            'prerequisites': 'Basic mathematics, statistics knowledge, Excel proficiency',
+            'duration': '6-8 months with consistent practice',
             'steps': [
                 {
                     'step': 1,
-                    'title': 'Data Foundations 📊',
+                    'title': 'Foundation & Excel Mastery 📊',
                     'duration': '3-4 weeks',
                     'topics': [
-                        'Statistics fundamentals',
-                        'Data types and structures',
-                        'Excel/Google Sheets mastery',
-                        'Basic data visualization principles',
-                        'Data collection methods'
+                        'Statistics fundamentals and descriptive analytics',
+                        'Advanced Excel functions and pivot tables',
+                        'Data visualization principles',
+                        'Business intelligence concepts',
+                        'Data types and measurement scales'
                     ],
                     'resources': [
                         {'title': 'Khan Academy Statistics', 'url': 'https://www.khanacademy.org/math/statistics-probability'},
-                        {'title': 'Excel Tutorial', 'url': 'https://support.microsoft.com/en-us/office/excel-help-center'},
-                        {'title': 'Data Visualization Guide', 'url': 'https://www.tableau.com/learn/articles/data-visualization'}
+                        {'title': 'Excel Exposure', 'url': 'https://excelexposure.com/'},
+                        {'title': 'Microsoft Excel Help', 'url': 'https://support.microsoft.com/en-us/excel'}
                     ],
-                    'projects': ['Sales data analysis in Excel', 'Statistical analysis report', 'Basic charts and graphs']
+                    'projects': ['Sales analysis dashboard in Excel', 'Statistical analysis of survey data', 'Financial modeling spreadsheet']
                 },
                 {
                     'step': 2,
-                    'title': 'SQL Mastery 🗃️',
+                    'title': 'SQL & Database Fundamentals 🗄️',
                     'duration': '4-5 weeks',
                     'topics': [
-                        'SQL fundamentals and syntax',
-                        'Complex joins and subqueries',
-                        'Window functions and CTEs',
-                        'Data aggregation and grouping',
-                        'Query optimization techniques'
+                        'SQL basics: SELECT, WHERE, GROUP BY, JOIN',
+                        'Advanced SQL: window functions, CTEs, subqueries',
+                        'Database design and normalization',
+                        'Data warehousing concepts',
+                        'ETL processes and data quality'
                     ],
                     'resources': [
-                        {'title': 'W3Schools SQL', 'url': 'https://www.w3schools.com/sql/'},
+                        {'title': 'W3Schools SQL Tutorial', 'url': 'https://www.w3schools.com/sql/'},
                         {'title': 'SQLBolt Interactive Tutorial', 'url': 'https://sqlbolt.com/'},
-                        {'title': 'PostgreSQL Tutorial', 'url': 'https://www.postgresqltutorial.com/'}
+                        {'title': 'PostgreSQL Documentation', 'url': 'https://www.postgresql.org/docs/'}
                     ],
-                    'projects': ['Database analysis project', 'Complex query challenges', 'Data extraction pipeline']
+                    'projects': ['E-commerce database analysis', 'Customer segmentation with SQL', 'Sales performance reporting system']
                 },
                 {
                     'step': 3,
@@ -651,71 +728,71 @@ def get_detailed_roadmap(request: dict):
                     'duration': '6-8 weeks',
                     'topics': [
                         'Python basics and data structures',
-                        'Pandas for data manipulation',
-                        'NumPy for numerical computing',
-                        'Data cleaning and preprocessing',
-                        'Jupyter notebook workflows'
+                        'Pandas for data manipulation and cleaning',
+                        'NumPy for numerical computations',
+                        'Matplotlib and Seaborn for visualization',
+                        'Jupyter notebooks and data exploration'
                     ],
                     'resources': [
                         {'title': 'Pandas Documentation', 'url': 'https://pandas.pydata.org/docs/'},
                         {'title': 'Python for Data Analysis Book', 'url': 'https://wesmckinney.com/book/'},
                         {'title': 'Kaggle Learn Python', 'url': 'https://www.kaggle.com/learn/python'}
                     ],
-                    'projects': ['Data cleaning project', 'Exploratory data analysis', 'Automated reporting script']
+                    'projects': ['COVID-19 data analysis', 'Stock market trend analysis', 'Customer churn prediction']
                 },
                 {
                     'step': 4,
-                    'title': 'Data Visualization 📈',
+                    'title': 'Statistical Analysis & Hypothesis Testing 📈',
                     'duration': '4-5 weeks',
                     'topics': [
-                        'Matplotlib and Seaborn',
-                        'Interactive visualizations',
-                        'Dashboard design principles',
-                        'Storytelling with data',
-                        'Color theory and accessibility'
+                        'Probability distributions and sampling',
+                        'Hypothesis testing and p-values',
+                        'Correlation and regression analysis',
+                        'A/B testing and experimental design',
+                        'Confidence intervals and statistical significance'
                     ],
                     'resources': [
-                        {'title': 'Matplotlib Documentation', 'url': 'https://matplotlib.org/stable/contents.html'},
-                        {'title': 'Seaborn Tutorial', 'url': 'https://seaborn.pydata.org/tutorial.html'},
-                        {'title': 'Plotly Documentation', 'url': 'https://plotly.com/python/'}
+                        {'title': 'Statistics by Jim', 'url': 'https://statisticsbyjim.com/'},
+                        {'title': 'Scipy Stats Documentation', 'url': 'https://docs.scipy.org/doc/scipy/reference/stats.html'},
+                        {'title': 'Coursera Statistics Course', 'url': 'https://www.coursera.org/learn/statistical-inferences'}
                     ],
-                    'projects': ['Interactive dashboard', 'Data story presentation', 'Visualization library']
+                    'projects': ['A/B test analysis for website optimization', 'Market research statistical study', 'Quality control analysis']
                 },
                 {
                     'step': 5,
-                    'title': 'Business Intelligence Tools 💼',
+                    'title': 'Business Intelligence Tools 📊',
                     'duration': '5-6 weeks',
                     'topics': [
-                        'Tableau fundamentals',
-                        'Power BI development',
-                        'Dashboard best practices',
-                        'KPI identification and tracking',
-                        'Report automation'
+                        'Tableau desktop and Tableau Public',
+                        'Power BI desktop and Power BI Service',
+                        'Dashboard design best practices',
+                        'Data storytelling and presentation',
+                        'KPI development and monitoring'
                     ],
                     'resources': [
                         {'title': 'Tableau Learning', 'url': 'https://www.tableau.com/learn'},
-                        {'title': 'Power BI Documentation', 'url': 'https://docs.microsoft.com/en-us/power-bi/'},
-                        {'title': 'BI Best Practices', 'url': 'https://www.sisense.com/blog/business-intelligence-best-practices/'}
+                        {'title': 'Microsoft Power BI Learning', 'url': 'https://docs.microsoft.com/en-us/power-bi/'},
+                        {'title': 'Storytelling with Data', 'url': 'http://www.storytellingwithdata.com/'}
                     ],
-                    'projects': ['Executive dashboard', 'Sales performance tracker', 'Automated reporting system']
+                    'projects': ['Executive dashboard for retail business', 'HR analytics dashboard', 'Financial performance monitoring system']
                 },
                 {
                     'step': 6,
-                    'title': 'Advanced Analytics 🎯',
-                    'duration': '6-7 weeks',
+                    'title': 'Advanced Analytics & Portfolio 🎯',
+                    'duration': '6-8 weeks',
                     'topics': [
-                        'Statistical hypothesis testing',
-                        'A/B testing and experimentation',
-                        'Predictive analytics basics',
-                        'Time series analysis',
-                        'Machine learning for analysts'
+                        'Time series analysis and forecasting',
+                        'Cohort analysis and customer lifetime value',
+                        'Advanced visualization techniques',
+                        'Portfolio development and presentation',
+                        'Industry-specific analytics applications'
                     ],
                     'resources': [
-                        {'title': 'Statistical Methods', 'url': 'https://www.statmethods.net/'},
-                        {'title': 'A/B Testing Guide', 'url': 'https://blog.hubspot.com/marketing/how-to-do-a-b-testing'},
-                        {'title': 'Scikit-learn', 'url': 'https://scikit-learn.org/stable/user_guide.html'}
+                        {'title': 'Time Series Analysis in Python', 'url': 'https://www.statsmodels.org/stable/tsa.html'},
+                        {'title': 'Kaggle Datasets', 'url': 'https://www.kaggle.com/datasets'},
+                        {'title': 'GitHub Portfolio Examples', 'url': 'https://github.com/topics/data-analysis'}
                     ],
-                    'projects': ['A/B test analysis', 'Forecasting model', 'Customer segmentation']
+                    'projects': ['End-to-end business analytics project', 'Predictive analytics model', 'Industry case study analysis']
                 }
             ],
             'career_paths': [
@@ -723,129 +800,129 @@ def get_detailed_roadmap(request: dict):
                 'Business Analyst',
                 'Marketing Analyst',
                 'Financial Analyst',
-                'Data Scientist'
+                'Operations Analyst'
             ],
             'tips': [
-                'Focus on understanding business context',
-                'Practice storytelling with data',
-                'Learn to ask the right questions',
-                'Master data cleaning and validation',
-                'Stay curious and keep learning new tools'
+                'Focus on business context, not just technical skills',
+                'Practice storytelling with data visualizations',
+                'Build a portfolio with diverse industry projects',
+                'Learn to ask the right business questions',
+                'Stay updated with industry trends and tools'
             ]
         },
         'machine learning': {
             'title': 'Machine Learning Roadmap',
-            'description': 'Complete guide to becoming a machine learning engineer',
-            'prerequisites': 'Programming knowledge, basic mathematics and statistics',
+            'description': 'Comprehensive path to becoming an ML engineer',
+            'prerequisites': 'Python programming, basic statistics, linear algebra',
             'duration': '8-12 months with consistent practice',
             'steps': [
                 {
                     'step': 1,
-                    'title': 'ML Fundamentals 🤖',
+                    'title': 'Mathematical Foundations 🔢',
                     'duration': '4-6 weeks',
                     'topics': [
-                        'Machine learning concepts and types',
-                        'Python for ML (NumPy, Pandas)',
-                        'Data preprocessing and cleaning',
-                        'Basic statistics and probability',
-                        'Linear algebra essentials'
+                        'Linear algebra: vectors, matrices, eigenvalues',
+                        'Calculus: derivatives, gradients, optimization',
+                        'Statistics and probability theory',
+                        'Information theory basics',
+                        'Mathematical notation for ML'
                     ],
                     'resources': [
-                        {'title': 'Scikit-learn Documentation', 'url': 'https://scikit-learn.org/stable/'},
-                        {'title': 'Andrew Ng ML Course', 'url': 'https://www.coursera.org/learn/machine-learning'},
-                        {'title': 'Python Machine Learning Book', 'url': 'https://sebastianraschka.com/books.html'}
+                        {'title': '3Blue1Brown Linear Algebra', 'url': 'https://www.3blue1brown.com/topics/linear-algebra'},
+                        {'title': 'Khan Academy Calculus', 'url': 'https://www.khanacademy.org/math/calculus-1'},
+                        {'title': 'Mathematics for Machine Learning', 'url': 'https://mml-book.github.io/'}
                     ],
-                    'projects': ['Iris classification', 'House price prediction', 'Data exploration notebook']
+                    'projects': ['Matrix operations implementation', 'Gradient descent from scratch', 'Statistical analysis of datasets']
                 },
                 {
                     'step': 2,
-                    'title': 'Supervised Learning 📚',
-                    'duration': '6-8 weeks',
+                    'title': 'Python & Data Science Libraries 🐍',
+                    'duration': '4-5 weeks',
                     'topics': [
-                        'Linear and logistic regression',
-                        'Decision trees and random forests',
-                        'Support vector machines',
-                        'Model evaluation metrics',
-                        'Cross-validation techniques'
+                        'Advanced Python programming concepts',
+                        'NumPy for numerical computing',
+                        'Pandas for data manipulation',
+                        'Matplotlib and Seaborn for visualization',
+                        'Jupyter notebooks and development workflow'
                     ],
                     'resources': [
-                        {'title': 'Hands-On ML Book', 'url': 'https://www.oreilly.com/library/view/hands-on-machine-learning/9781492032632/'},
-                        {'title': 'ML Algorithms Explained', 'url': 'https://towardsdatascience.com/machine-learning-algorithms-explained-8d20f8f1b9f0'},
-                        {'title': 'Kaggle Learn ML', 'url': 'https://www.kaggle.com/learn/intro-to-machine-learning'}
+                        {'title': 'NumPy Documentation', 'url': 'https://numpy.org/doc/stable/'},
+                        {'title': 'Pandas User Guide', 'url': 'https://pandas.pydata.org/docs/user_guide/'},
+                        {'title': 'Python Data Science Handbook', 'url': 'https://jakevdp.github.io/PythonDataScienceHandbook/'}
                     ],
-                    'projects': ['Customer churn prediction', 'Credit risk assessment', 'Medical diagnosis classifier']
+                    'projects': ['Data cleaning and EDA project', 'Statistical visualization dashboard', 'Automated data processing pipeline']
                 },
                 {
                     'step': 3,
-                    'title': 'Unsupervised Learning 🔍',
-                    'duration': '4-5 weeks',
+                    'title': 'Classical Machine Learning 🤖',
+                    'duration': '6-8 weeks',
                     'topics': [
-                        'Clustering algorithms (K-means, DBSCAN)',
-                        'Dimensionality reduction (PCA, t-SNE)',
-                        'Association rules and market basket analysis',
-                        'Anomaly detection techniques',
-                        'Feature selection methods'
+                        'Supervised learning: regression and classification',
+                        'Unsupervised learning: clustering and dimensionality reduction',
+                        'Model evaluation and cross-validation',
+                        'Feature engineering and selection',
+                        'Scikit-learn ecosystem'
                     ],
                     'resources': [
-                        {'title': 'Unsupervised Learning Guide', 'url': 'https://scikit-learn.org/stable/unsupervised_learning.html'},
-                        {'title': 'Clustering Algorithms', 'url': 'https://towardsdatascience.com/the-5-clustering-algorithms-data-scientists-need-to-know-a36d136ef68'},
-                        {'title': 'PCA Explained', 'url': 'https://builtin.com/data-science/step-step-explanation-principal-component-analysis'}
+                        {'title': 'Scikit-learn Documentation', 'url': 'https://scikit-learn.org/stable/'},
+                        {'title': 'Hands-On Machine Learning', 'url': 'https://www.oreilly.com/library/view/hands-on-machine-learning/9781492032632/'},
+                        {'title': 'Andrew Ng ML Course', 'url': 'https://www.coursera.org/learn/machine-learning'}
                     ],
-                    'projects': ['Customer segmentation', 'Recommendation system', 'Fraud detection model']
+                    'projects': ['House price prediction model', 'Customer segmentation analysis', 'Image classification with traditional ML']
                 },
                 {
                     'step': 4,
-                    'title': 'Deep Learning 🧠',
+                    'title': 'Deep Learning Fundamentals 🧠',
                     'duration': '8-10 weeks',
                     'topics': [
-                        'Neural network fundamentals',
-                        'TensorFlow and PyTorch basics',
-                        'Convolutional Neural Networks (CNN)',
-                        'Recurrent Neural Networks (RNN)',
-                        'Transfer learning and fine-tuning'
+                        'Neural networks and backpropagation',
+                        'TensorFlow and PyTorch frameworks',
+                        'Convolutional Neural Networks (CNNs)',
+                        'Recurrent Neural Networks (RNNs)',
+                        'Transfer learning and pre-trained models'
                     ],
                     'resources': [
                         {'title': 'TensorFlow Documentation', 'url': 'https://www.tensorflow.org/learn'},
                         {'title': 'PyTorch Tutorials', 'url': 'https://pytorch.org/tutorials/'},
                         {'title': 'Deep Learning Specialization', 'url': 'https://www.coursera.org/specializations/deep-learning'}
                     ],
-                    'projects': ['Image classification CNN', 'Text sentiment analysis', 'Time series forecasting']
+                    'projects': ['Image classification with CNNs', 'Text sentiment analysis with RNNs', 'Transfer learning for custom datasets']
                 },
                 {
                     'step': 5,
-                    'title': 'MLOps & Deployment 🚀',
-                    'duration': '5-6 weeks',
+                    'title': 'MLOps & Production Deployment 🚀',
+                    'duration': '6-8 weeks',
                     'topics': [
-                        'Model versioning and tracking',
-                        'Model deployment strategies',
-                        'API development for ML models',
-                        'Monitoring and maintenance',
-                        'A/B testing for ML systems'
+                        'Model versioning and experiment tracking',
+                        'CI/CD pipelines for ML models',
+                        'Model serving and API development',
+                        'Monitoring and model drift detection',
+                        'Cloud platforms for ML (AWS, GCP, Azure)'
                     ],
                     'resources': [
                         {'title': 'MLflow Documentation', 'url': 'https://mlflow.org/docs/latest/index.html'},
-                        {'title': 'Docker for ML', 'url': 'https://docs.docker.com/'},
-                        {'title': 'FastAPI for ML', 'url': 'https://fastapi.tiangolo.com/'}
+                        {'title': 'Kubeflow Documentation', 'url': 'https://www.kubeflow.org/docs/'},
+                        {'title': 'AWS SageMaker', 'url': 'https://docs.aws.amazon.com/sagemaker/'}
                     ],
-                    'projects': ['ML API service', 'Model monitoring dashboard', 'Automated ML pipeline']
+                    'projects': ['End-to-end ML pipeline', 'Model deployment with Docker', 'Real-time prediction API']
                 },
                 {
                     'step': 6,
-                    'title': 'Specialized Applications 🎯',
-                    'duration': '6-8 weeks',
+                    'title': 'Specialized Applications & Research 🎯',
+                    'duration': '8-10 weeks',
                     'topics': [
-                        'Natural Language Processing',
+                        'Natural Language Processing (NLP)',
                         'Computer Vision applications',
                         'Reinforcement Learning basics',
-                        'Time series forecasting',
-                        'Ensemble methods and stacking'
+                        'Generative AI and Large Language Models',
+                        'Research paper implementation'
                     ],
                     'resources': [
                         {'title': 'Hugging Face Transformers', 'url': 'https://huggingface.co/docs/transformers/index'},
-                        {'title': 'OpenCV Documentation', 'url': 'https://docs.opencv.org/'},
-                        {'title': 'OpenAI Gym', 'url': 'https://gym.openai.com/docs/'}
+                        {'title': 'OpenAI Gym', 'url': 'https://gym.openai.com/docs/'},
+                        {'title': 'Papers with Code', 'url': 'https://paperswithcode.com/'}
                     ],
-                    'projects': ['Chatbot with NLP', 'Object detection system', 'Stock price predictor']
+                    'projects': ['Chatbot with transformer models', 'Object detection system', 'Recommendation engine']
                 }
             ],
             'career_paths': [
@@ -861,526 +938,6 @@ def get_detailed_roadmap(request: dict):
                 'Stay updated with latest research and papers',
                 'Build a strong portfolio with diverse projects',
                 'Practice explaining complex concepts simply'
-            ]
-        },
-        'devops': {
-            'title': 'DevOps Engineering Roadmap',
-            'description': 'Complete guide to becoming a DevOps engineer',
-            'prerequisites': 'Basic programming and system administration knowledge',
-            'duration': '6-9 months with consistent practice',
-            'steps': [
-                {
-                    'step': 1,
-                    'title': 'Foundation & Version Control 🏗️',
-                    'duration': '3-4 weeks',
-                    'topics': [
-                        'Linux system administration',
-                        'Git advanced workflows',
-                        'Shell scripting and automation',
-                        'Network fundamentals',
-                        'Security basics'
-                    ],
-                    'resources': [
-                        {'title': 'Linux Command Line', 'url': 'https://linuxcommand.org/'},
-                        {'title': 'Git Documentation', 'url': 'https://git-scm.com/doc'},
-                        {'title': 'Bash Scripting Guide', 'url': 'https://tldp.org/LDP/Bash-Beginners-Guide/html/'}
-                    ],
-                    'projects': ['Automated backup script', 'Git workflow setup', 'System monitoring script']
-                },
-                {
-                    'step': 2,
-                    'title': 'Containerization 🐳',
-                    'duration': '4-5 weeks',
-                    'topics': [
-                        'Docker fundamentals',
-                        'Container orchestration',
-                        'Kubernetes basics',
-                        'Multi-stage builds',
-                        'Container security'
-                    ],
-                    'resources': [
-                        {'title': 'Docker Documentation', 'url': 'https://docs.docker.com/'},
-                        {'title': 'Kubernetes Documentation', 'url': 'https://kubernetes.io/docs/home/'},
-                        {'title': 'Docker Best Practices', 'url': 'https://docs.docker.com/develop/dev-best-practices/'}
-                    ],
-                    'projects': ['Dockerized web application', 'Kubernetes cluster setup', 'Container registry']
-                },
-                {
-                    'step': 3,
-                    'title': 'CI/CD Pipelines ⚙️',
-                    'duration': '5-6 weeks',
-                    'topics': [
-                        'Continuous Integration concepts',
-                        'GitHub Actions and GitLab CI',
-                        'Jenkins pipeline development',
-                        'Automated testing integration',
-                        'Deployment strategies'
-                    ],
-                    'resources': [
-                        {'title': 'GitHub Actions', 'url': 'https://docs.github.com/en/actions'},
-                        {'title': 'Jenkins Documentation', 'url': 'https://www.jenkins.io/doc/'},
-                        {'title': 'GitLab CI/CD', 'url': 'https://docs.gitlab.com/ee/ci/'}
-                    ],
-                    'projects': ['Automated deployment pipeline', 'Multi-environment CI/CD', 'Testing automation']
-                },
-                {
-                    'step': 4,
-                    'title': 'Infrastructure as Code 🏗️',
-                    'duration': '5-6 weeks',
-                    'topics': [
-                        'Terraform fundamentals',
-                        'CloudFormation templates',
-                        'Ansible automation',
-                        'Infrastructure versioning',
-                        'State management'
-                    ],
-                    'resources': [
-                        {'title': 'Terraform Documentation', 'url': 'https://www.terraform.io/docs'},
-                        {'title': 'Ansible Documentation', 'url': 'https://docs.ansible.com/'},
-                        {'title': 'AWS CloudFormation', 'url': 'https://docs.aws.amazon.com/cloudformation/'}
-                    ],
-                    'projects': ['Cloud infrastructure automation', 'Multi-cloud deployment', 'Configuration management']
-                },
-                {
-                    'step': 5,
-                    'title': 'Monitoring & Observability 📊',
-                    'duration': '4-5 weeks',
-                    'topics': [
-                        'Prometheus and Grafana',
-                        'ELK Stack (Elasticsearch, Logstash, Kibana)',
-                        'Application performance monitoring',
-                        'Alerting and incident response',
-                        'Distributed tracing'
-                    ],
-                    'resources': [
-                        {'title': 'Prometheus Documentation', 'url': 'https://prometheus.io/docs/'},
-                        {'title': 'Grafana Documentation', 'url': 'https://grafana.com/docs/'},
-                        {'title': 'Elastic Stack', 'url': 'https://www.elastic.co/guide/index.html'}
-                    ],
-                    'projects': ['Monitoring dashboard', 'Log aggregation system', 'Alerting setup']
-                },
-                {
-                    'step': 6,
-                    'title': 'Cloud & Security 🔒',
-                    'duration': '6-7 weeks',
-                    'topics': [
-                        'AWS/Azure/GCP services',
-                        'Cloud security best practices',
-                        'Secrets management',
-                        'Compliance and governance',
-                        'Disaster recovery planning'
-                    ],
-                    'resources': [
-                        {'title': 'AWS Documentation', 'url': 'https://docs.aws.amazon.com/'},
-                        {'title': 'Azure Documentation', 'url': 'https://docs.microsoft.com/en-us/azure/'},
-                        {'title': 'Cloud Security Alliance', 'url': 'https://cloudsecurityalliance.org/'}
-                    ],
-                    'projects': ['Secure cloud architecture', 'Backup and recovery system', 'Compliance automation']
-                }
-            ],
-            'career_paths': [
-                'DevOps Engineer',
-                'Site Reliability Engineer',
-                'Cloud Engineer',
-                'Platform Engineer',
-                'Infrastructure Engineer'
-            ],
-            'tips': [
-                'Automate everything you can',
-                'Focus on reliability and scalability',
-                'Learn multiple cloud platforms',
-                'Practice incident response scenarios',
-                'Stay updated with security best practices'
-            ]
-        },
-        'cybersecurity': {
-            'title': 'Cybersecurity Roadmap',
-            'description': 'Complete guide to becoming a cybersecurity professional',
-            'prerequisites': 'Basic networking and system administration knowledge',
-            'duration': '8-12 months with consistent practice',
-            'steps': [
-                {
-                    'step': 1,
-                    'title': 'Security Fundamentals 🛡️',
-                    'duration': '4-6 weeks',
-                    'topics': [
-                        'Information security principles',
-                        'Network security basics',
-                        'Operating system security',
-                        'Risk assessment fundamentals',
-                        'Security frameworks overview'
-                    ],
-                    'resources': [
-                        {'title': 'NIST Cybersecurity Framework', 'url': 'https://www.nist.gov/cyberframework'},
-                        {'title': 'OWASP Foundation', 'url': 'https://owasp.org/'},
-                        {'title': 'CompTIA Security+', 'url': 'https://www.comptia.org/certifications/security'}
-                    ],
-                    'projects': ['Security policy document', 'Risk assessment report', 'Network security audit']
-                },
-                {
-                    'step': 2,
-                    'title': 'Network Security 🌐',
-                    'duration': '5-6 weeks',
-                    'topics': [
-                        'Firewalls and intrusion detection',
-                        'VPN technologies',
-                        'Network monitoring and analysis',
-                        'Wireless security',
-                        'Network segmentation'
-                    ],
-                    'resources': [
-                        {'title': 'Wireshark Documentation', 'url': 'https://www.wireshark.org/docs/'},
-                        {'title': 'pfSense Documentation', 'url': 'https://docs.netgate.com/pfsense/en/latest/'},
-                        {'title': 'Cisco Security', 'url': 'https://www.cisco.com/c/en/us/products/security/index.html'}
-                    ],
-                    'projects': ['Firewall configuration', 'Network traffic analysis', 'IDS/IPS setup']
-                },
-                {
-                    'step': 3,
-                    'title': 'Ethical Hacking & Penetration Testing 🔍',
-                    'duration': '6-8 weeks',
-                    'topics': [
-                        'Penetration testing methodology',
-                        'Vulnerability assessment tools',
-                        'Web application security testing',
-                        'Social engineering awareness',
-                        'Exploit development basics'
-                    ],
-                    'resources': [
-                        {'title': 'Kali Linux Documentation', 'url': 'https://www.kali.org/docs/'},
-                        {'title': 'OWASP Testing Guide', 'url': 'https://owasp.org/www-project-web-security-testing-guide/'},
-                        {'title': 'Metasploit Documentation', 'url': 'https://docs.rapid7.com/metasploit/'}
-                    ],
-                    'projects': ['Vulnerability scanner', 'Web app penetration test', 'Security assessment report']
-                },
-                {
-                    'step': 4,
-                    'title': 'Incident Response & Forensics 🚨',
-                    'duration': '5-6 weeks',
-                    'topics': [
-                        'Incident response procedures',
-                        'Digital forensics techniques',
-                        'Malware analysis basics',
-                        'Evidence collection and preservation',
-                        'Threat hunting methodologies'
-                    ],
-                    'resources': [
-                        {'title': 'SANS Incident Response', 'url': 'https://www.sans.org/white-papers/'},
-                        {'title': 'Volatility Framework', 'url': 'https://www.volatilityfoundation.org/'},
-                        {'title': 'NIST Incident Response Guide', 'url': 'https://csrc.nist.gov/publications/detail/sp/800-61/rev-2/final'}
-                    ],
-                    'projects': ['Incident response playbook', 'Forensics investigation', 'Malware analysis lab']
-                },
-                {
-                    'step': 5,
-                    'title': 'Compliance & Governance 📋',
-                    'duration': '4-5 weeks',
-                    'topics': [
-                        'Regulatory compliance (GDPR, HIPAA, SOX)',
-                        'Security audit procedures',
-                        'Policy development and implementation',
-                        'Business continuity planning',
-                        'Third-party risk management'
-                    ],
-                    'resources': [
-                        {'title': 'ISO 27001 Standard', 'url': 'https://www.iso.org/isoiec-27001-information-security.html'},
-                        {'title': 'GDPR Compliance Guide', 'url': 'https://gdpr.eu/'},
-                        {'title': 'SOC 2 Framework', 'url': 'https://www.aicpa.org/interestareas/frc/assuranceadvisoryservices/aicpasoc2report.html'}
-                    ],
-                    'projects': ['Compliance assessment', 'Security policy framework', 'Audit preparation']
-                },
-                {
-                    'step': 6,
-                    'title': 'Advanced Security & Specialization 🎯',
-                    'duration': '6-8 weeks',
-                    'topics': [
-                        'Cloud security architecture',
-                        'DevSecOps implementation',
-                        'Threat intelligence analysis',
-                        'Security automation and orchestration',
-                        'Emerging threats and technologies'
-                    ],
-                    'resources': [
-                        {'title': 'AWS Security', 'url': 'https://aws.amazon.com/security/'},
-                        {'title': 'MITRE ATT&CK Framework', 'url': 'https://attack.mitre.org/'},
-                        {'title': 'SANS Security Training', 'url': 'https://www.sans.org/cyber-security-courses/'}
-                    ],
-                    'projects': ['Cloud security assessment', 'Threat intelligence platform', 'Security automation tool']
-                }
-            ],
-            'career_paths': [
-                'Security Analyst',
-                'Penetration Tester',
-                'Security Architect',
-                'Incident Response Specialist',
-                'Compliance Officer'
-            ],
-            'tips': [
-                'Stay updated with latest threats and vulnerabilities',
-                'Practice in controlled lab environments',
-                'Develop both technical and communication skills',
-                'Understand business impact of security decisions',
-                'Build a network within the security community'
-            ]
-        },
-        'data engineering': {
-            'title': 'Data Engineering Roadmap',
-            'description': 'Complete guide to becoming a data engineer',
-            'prerequisites': 'Programming knowledge, basic database concepts',
-            'duration': '7-10 months with consistent practice',
-            'steps': [
-                {
-                    'step': 1,
-                    'title': 'Data Fundamentals 📊',
-                    'duration': '4-5 weeks',
-                    'topics': [
-                        'Data types and structures',
-                        'Database design principles',
-                        'SQL advanced queries',
-                        'Data modeling concepts',
-                        'ETL/ELT fundamentals'
-                    ],
-                    'resources': [
-                        {'title': 'PostgreSQL Documentation', 'url': 'https://www.postgresql.org/docs/'},
-                        {'title': 'SQL Tutorial', 'url': 'https://www.w3schools.com/sql/'},
-                        {'title': 'Data Modeling Guide', 'url': 'https://www.guru99.com/data-modelling-conceptual-logical.html'}
-                    ],
-                    'projects': ['Database design project', 'Complex SQL queries', 'Data warehouse schema']
-                },
-                {
-                    'step': 2,
-                    'title': 'Programming for Data 🐍',
-                    'duration': '5-6 weeks',
-                    'topics': [
-                        'Python for data engineering',
-                        'Data manipulation with Pandas',
-                        'API development and integration',
-                        'Error handling and logging',
-                        'Code versioning and testing'
-                    ],
-                    'resources': [
-                        {'title': 'Python Documentation', 'url': 'https://docs.python.org/3/'},
-                        {'title': 'Pandas Documentation', 'url': 'https://pandas.pydata.org/docs/'},
-                        {'title': 'FastAPI Documentation', 'url': 'https://fastapi.tiangolo.com/'}
-                    ],
-                    'projects': ['Data processing pipeline', 'REST API for data', 'Automated data validation']
-                },
-                {
-                    'step': 3,
-                    'title': 'Big Data Technologies 🚀',
-                    'duration': '6-8 weeks',
-                    'topics': [
-                        'Apache Spark fundamentals',
-                        'Hadoop ecosystem overview',
-                        'Distributed computing concepts',
-                        'Data partitioning strategies',
-                        'Performance optimization'
-                    ],
-                    'resources': [
-                        {'title': 'Apache Spark Documentation', 'url': 'https://spark.apache.org/docs/latest/'},
-                        {'title': 'Hadoop Documentation', 'url': 'https://hadoop.apache.org/docs/'},
-                        {'title': 'Databricks Learning', 'url': 'https://databricks.com/learn'}
-                    ],
-                    'projects': ['Spark data processing job', 'Distributed data analysis', 'Big data pipeline']
-                },
-                {
-                    'step': 4,
-                    'title': 'Stream Processing 🌊',
-                    'duration': '5-6 weeks',
-                    'topics': [
-                        'Apache Kafka fundamentals',
-                        'Real-time data processing',
-                        'Stream processing patterns',
-                        'Event-driven architecture',
-                        'Data streaming best practices'
-                    ],
-                    'resources': [
-                        {'title': 'Apache Kafka Documentation', 'url': 'https://kafka.apache.org/documentation/'},
-                        {'title': 'Confluent Platform', 'url': 'https://docs.confluent.io/'},
-                        {'title': 'Apache Flink', 'url': 'https://flink.apache.org/learn-flink/'}
-                    ],
-                    'projects': ['Real-time analytics pipeline', 'Event streaming system', 'Stream processing application']
-                },
-                {
-                    'step': 5,
-                    'title': 'Cloud Data Platforms ☁️',
-                    'duration': '5-6 weeks',
-                    'topics': [
-                        'AWS data services (S3, Redshift, EMR)',
-                        'Google Cloud Platform (BigQuery, Dataflow)',
-                        'Azure data services (Synapse, Data Factory)',
-                        'Data lake architecture',
-                        'Serverless data processing'
-                    ],
-                    'resources': [
-                        {'title': 'AWS Data Analytics', 'url': 'https://aws.amazon.com/big-data/datalakes-and-analytics/'},
-                        {'title': 'Google Cloud Data', 'url': 'https://cloud.google.com/products/data-analytics'},
-                        {'title': 'Azure Data Services', 'url': 'https://azure.microsoft.com/en-us/product-categories/analytics/'}
-                    ],
-                    'projects': ['Cloud data warehouse', 'Serverless ETL pipeline', 'Multi-cloud data integration']
-                },
-                {
-                    'step': 6,
-                    'title': 'DataOps & Orchestration 🎯',
-                    'duration': '4-5 weeks',
-                    'topics': [
-                        'Apache Airflow workflow management',
-                        'Data pipeline orchestration',
-                        'Data quality monitoring',
-                        'CI/CD for data pipelines',
-                        'Data governance and lineage'
-                    ],
-                    'resources': [
-                        {'title': 'Apache Airflow', 'url': 'https://airflow.apache.org/docs/'},
-                        {'title': 'Prefect Documentation', 'url': 'https://docs.prefect.io/'},
-                        {'title': 'Great Expectations', 'url': 'https://docs.greatexpectations.io/'}
-                    ],
-                    'projects': ['Automated data pipeline', 'Data quality framework', 'Workflow orchestration system']
-                }
-            ],
-            'career_paths': [
-                'Data Engineer',
-                'Big Data Engineer',
-                'Cloud Data Engineer',
-                'Data Platform Engineer',
-                'Analytics Engineer'
-            ],
-            'tips': [
-                'Focus on building scalable and reliable systems',
-                'Understand both batch and real-time processing',
-                'Learn multiple cloud platforms',
-                'Practice data modeling and optimization',
-                'Stay updated with emerging data technologies'
-            ]
-        },
-        'algorithms': {
-            'title': 'Algorithms & Data Structures Roadmap',
-            'description': 'Complete guide to mastering algorithms and data structures',
-            'prerequisites': 'Basic programming knowledge in any language',
-            'duration': '6-9 months with consistent practice',
-            'steps': [
-                {
-                    'step': 1,
-                    'title': 'Fundamentals & Complexity 📚',
-                    'duration': '3-4 weeks',
-                    'topics': [
-                        'Big O notation and complexity analysis',
-                        'Basic data structures (arrays, linked lists)',
-                        'Stacks and queues implementation',
-                        'Hash tables and hash functions',
-                        'Problem-solving strategies'
-                    ],
-                    'resources': [
-                        {'title': 'Introduction to Algorithms (CLRS)', 'url': 'https://mitpress.mit.edu/books/introduction-algorithms-third-edition'},
-                        {'title': 'LeetCode Explore', 'url': 'https://leetcode.com/explore/'},
-                        {'title': 'GeeksforGeeks DSA', 'url': 'https://www.geeksforgeeks.org/data-structures/'}
-                    ],
-                    'projects': ['Data structure implementations', 'Complexity analysis exercises', 'Basic algorithm challenges']
-                },
-                {
-                    'step': 2,
-                    'title': 'Sorting & Searching 🔍',
-                    'duration': '4-5 weeks',
-                    'topics': [
-                        'Sorting algorithms (bubble, merge, quick, heap)',
-                        'Binary search and variations',
-                        'Two pointers technique',
-                        'Sliding window problems',
-                        'Search in rotated arrays'
-                    ],
-                    'resources': [
-                        {'title': 'Sorting Algorithms Visualizer', 'url': 'https://www.sortvisualizer.com/'},
-                        {'title': 'Binary Search Patterns', 'url': 'https://leetcode.com/discuss/general-discussion/786126/python-powerful-ultimate-binary-search-template-solved-many-problems'},
-                        {'title': 'Algorithm Visualizations', 'url': 'https://algorithm-visualizer.org/'}
-                    ],
-                    'projects': ['Sorting algorithm comparison', 'Search optimization problems', 'Custom search implementations']
-                },
-                {
-                    'step': 3,
-                    'title': 'Trees & Graphs 🌳',
-                    'duration': '6-7 weeks',
-                    'topics': [
-                        'Binary trees and BST operations',
-                        'Tree traversals (DFS, BFS)',
-                        'Graph representations and algorithms',
-                        'Shortest path algorithms (Dijkstra, Floyd-Warshall)',
-                        'Minimum spanning trees'
-                    ],
-                    'resources': [
-                        {'title': 'Tree Algorithms', 'url': 'https://www.geeksforgeeks.org/binary-tree-data-structure/'},
-                        {'title': 'Graph Algorithms', 'url': 'https://www.geeksforgeeks.org/graph-data-structure-and-algorithms/'},
-                        {'title': 'Visualizing Algorithms', 'url': 'https://bost.ocks.org/mike/algorithms/'}
-                    ],
-                    'projects': ['Binary search tree implementation', 'Graph traversal algorithms', 'Pathfinding visualizer']
-                },
-                {
-                    'step': 4,
-                    'title': 'Dynamic Programming 💡',
-                    'duration': '5-6 weeks',
-                    'topics': [
-                        'DP fundamentals and patterns',
-                        'Memoization vs tabulation',
-                        'Classic DP problems (knapsack, LCS, LIS)',
-                        'State space optimization',
-                        'Advanced DP techniques'
-                    ],
-                    'resources': [
-                        {'title': 'Dynamic Programming Patterns', 'url': 'https://leetcode.com/discuss/general-discussion/458695/dynamic-programming-patterns'},
-                        {'title': 'DP Tutorial', 'url': 'https://www.topcoder.com/community/competitive-programming/tutorials/dynamic-programming-from-novice-to-advanced/'},
-                        {'title': 'DP Problems Collection', 'url': 'https://atcoder.jp/contests/dp'}
-                    ],
-                    'projects': ['Classic DP problem solutions', 'DP optimization challenges', 'Custom DP applications']
-                },
-                {
-                    'step': 5,
-                    'title': 'Advanced Algorithms 🚀',
-                    'duration': '5-6 weeks',
-                    'topics': [
-                        'Greedy algorithms and proofs',
-                        'Divide and conquer strategies',
-                        'Backtracking and branch & bound',
-                        'String algorithms (KMP, Rabin-Karp)',
-                        'Advanced data structures (segment trees, tries)'
-                    ],
-                    'resources': [
-                        {'title': 'Advanced Algorithms Course', 'url': 'https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-854j-advanced-algorithms-fall-2008/'},
-                        {'title': 'String Algorithms', 'url': 'https://www.geeksforgeeks.org/string-data-structure/'},
-                        {'title': 'Competitive Programming Handbook', 'url': 'https://cses.fi/book/book.pdf'}
-                    ],
-                    'projects': ['String matching algorithms', 'Advanced tree structures', 'Optimization problems']
-                },
-                {
-                    'step': 6,
-                    'title': 'System Design & Practice 🎯',
-                    'duration': '4-5 weeks',
-                    'topics': [
-                        'System design fundamentals',
-                        'Scalability and performance',
-                        'Competitive programming strategies',
-                        'Interview preparation techniques',
-                        'Code optimization and debugging'
-                    ],
-                    'resources': [
-                        {'title': 'System Design Primer', 'url': 'https://github.com/donnemartin/system-design-primer'},
-                        {'title': 'Codeforces', 'url': 'https://codeforces.com/'},
-                        {'title': 'Interview Preparation', 'url': 'https://www.interviewbit.com/courses/programming/'}
-                    ],
-                    'projects': ['System design case studies', 'Contest participation', 'Mock interview practice']
-                }
-            ],
-            'career_paths': [
-                'Software Engineer',
-                'Competitive Programmer',
-                'Algorithm Engineer',
-                'Research Scientist',
-                'Technical Interviewer'
-            ],
-            'tips': [
-                'Practice consistently on coding platforms',
-                'Focus on understanding patterns and techniques',
-                'Participate in programming contests',
-                'Implement algorithms from scratch',
-                'Explain your solutions clearly'
             ]
         }
     }
@@ -1482,6 +1039,179 @@ def download_roadmap_pdf(request: dict):
         media_type='application/pdf',
         filename=f"{domain}_roadmap.pdf"
     )
+@app.post("/roadmap")
+def get_roadmap(request: dict):
+    # Redirect to detailed roadmap
+    return get_detailed_roadmap(request), 'One React mini project']
+            },
+            'week5': {
+                'title': 'Week 5 – Polishing',
+                'topics': ['APIs & fetch', 'Basic performance + clean UI', 'Final project + deploy (Netlify/Vercel)']
+            }
+        },
+        'backend': {
+            'week1': {
+                'title': 'Week 1 – Server Fundamentals',
+                'topics': ['HTTP protocols & REST principles', 'Node.js/Python basics', 'Build simple API endpoints']
+            },
+            'week2': {
+                'title': 'Week 2 – Database Integration',
+                'topics': ['SQL basics & database design', 'Connect API to database', 'CRUD operations implementation']
+            },
+            'week3': {
+                'title': 'Week 3 – Authentication & Security',
+                'topics': ['User authentication systems', 'JWT tokens & sessions', 'Password hashing & validation']
+            },
+            'week4': {
+                'title': 'Week 4 – Advanced Features',
+                'topics': ['File uploads & processing', 'Email services integration', 'API documentation with Swagger']
+            },
+            'week5': {
+                'title': 'Week 5 – Deployment & Scaling',
+                'topics': ['Cloud deployment (AWS/Heroku)', 'Environment configuration', 'Basic monitoring & logging']
+            }
+        },
+        'data analytics': {
+            'week1': {
+                'title': 'Week 1 – Data Foundations',
+                'topics': ['SQL fundamentals & queries', 'Excel/Google Sheets mastery', 'Basic statistical concepts']
+            },
+            'week2': {
+                'title': 'Week 2 – Python for Data',
+                'topics': ['Python basics & Pandas', 'Data cleaning & preprocessing', 'Jupyter notebook workflows']
+            },
+            'week3': {
+                'title': 'Week 3 – Visualization & Analysis',
+                'topics': ['Matplotlib & Seaborn charts', 'Statistical analysis techniques', 'Hypothesis testing basics']
+            },
+            'week4': {
+                'title': 'Week 4 – Business Intelligence',
+                'topics': ['Tableau/Power BI dashboards', 'KPI identification & tracking', 'Interactive report creation']
+            },
+            'week5': {
+                'title': 'Week 5 – Real-world Projects',
+                'topics': ['End-to-end analysis project', 'Presentation & storytelling', 'Portfolio development']
+            }
+        },
+        'machine learning': {
+            'week1': {
+                'title': 'Week 1 – ML Fundamentals',
+                'topics': ['Python & NumPy/Pandas', 'Supervised vs Unsupervised learning', 'Basic linear regression']
+            },
+            'week2': {
+                'title': 'Week 2 – Core Algorithms',
+                'topics': ['Classification algorithms', 'Decision trees & Random Forest', 'Model evaluation metrics']
+            },
+            'week3': {
+                'title': 'Week 3 – Data Preprocessing',
+                'topics': ['Feature engineering techniques', 'Handling missing data', 'Cross-validation methods']
+            },
+            'week4': {
+                'title': 'Week 4 – Advanced Models',
+                'topics': ['Neural networks basics', 'Scikit-learn & TensorFlow', 'Hyperparameter tuning']
+            },
+            'week5': {
+                'title': 'Week 5 – Deployment & MLOps',
+                'topics': ['Model deployment strategies', 'API creation for ML models', 'Monitoring model performance']
+            }
+        },
+        'devops': {
+            'week1': {
+                'title': 'Week 1 – Version Control & CI/CD',
+                'topics': ['Git advanced workflows', 'GitHub Actions basics', 'Automated testing setup']
+            },
+            'week2': {
+                'title': 'Week 2 – Containerization',
+                'topics': ['Docker fundamentals', 'Container orchestration', 'Multi-stage builds']
+            },
+            'week3': {
+                'title': 'Week 3 – Cloud Infrastructure',
+                'topics': ['AWS/Azure basics', 'Infrastructure as Code', 'Terraform fundamentals']
+            },
+            'week4': {
+                'title': 'Week 4 – Monitoring & Security',
+                'topics': ['Application monitoring', 'Log aggregation systems', 'Security best practices']
+            },
+            'week5': {
+                'title': 'Week 5 – Production Deployment',
+                'topics': ['Kubernetes basics', 'Load balancing & scaling', 'Disaster recovery planning']
+            }
+        },
+        'cybersecurity': {
+            'week1': {
+                'title': 'Week 1 – Security Fundamentals',
+                'topics': ['CIA Triad & risk assessment', 'Network security basics', 'Common attack vectors']
+            },
+            'week2': {
+                'title': 'Week 2 – Ethical Hacking',
+                'topics': ['Penetration testing basics', 'Vulnerability scanning tools', 'OWASP Top 10']
+            },
+            'week3': {
+                'title': 'Week 3 – Network Security',
+                'topics': ['Firewall configuration', 'Intrusion detection systems', 'Network monitoring']
+            },
+            'week4': {
+                'title': 'Week 4 – Incident Response',
+                'topics': ['Security incident handling', 'Digital forensics basics', 'Malware analysis']
+            },
+            'week5': {
+                'title': 'Week 5 – Compliance & Governance',
+                'topics': ['Security frameworks (ISO 27001)', 'Compliance auditing', 'Security awareness training']
+            }
+        },
+        'data engineering': {
+            'week1': {
+                'title': 'Week 1 – Data Pipeline Basics',
+                'topics': ['ETL concepts & design', 'Python for data processing', 'Database fundamentals']
+            },
+            'week2': {
+                'title': 'Week 2 – Big Data Technologies',
+                'topics': ['Apache Spark basics', 'Distributed computing concepts', 'Data formats (Parquet, Avro)']
+            },
+            'week3': {
+                'title': 'Week 3 – Cloud Data Platforms',
+                'topics': ['AWS/GCP data services', 'Data lakes vs warehouses', 'Serverless data processing']
+            },
+            'week4': {
+                'title': 'Week 4 – Stream Processing',
+                'topics': ['Real-time data processing', 'Apache Kafka basics', 'Event-driven architectures']
+            },
+            'week5': {
+                'title': 'Week 5 – Data Quality & Monitoring',
+                'topics': ['Data validation frameworks', 'Pipeline monitoring', 'Data governance practices']
+            }
+        },
+        'algorithms': {
+            'week1': {
+                'title': 'Week 1 – Data Structures',
+                'topics': ['Arrays, Linked Lists, Stacks, Queues', 'Time & Space complexity', 'Basic problem solving']
+            },
+            'week2': {
+                'title': 'Week 2 – Sorting & Searching',
+                'topics': ['Sorting algorithms comparison', 'Binary search variations', 'Hash tables & applications']
+            },
+            'week3': {
+                'title': 'Week 3 – Trees & Graphs',
+                'topics': ['Binary trees & traversals', 'Graph algorithms (BFS, DFS)', 'Tree-based problems']
+            },
+            'week4': {
+                'title': 'Week 4 – Dynamic Programming',
+                'topics': ['DP concepts & patterns', 'Memoization vs tabulation', 'Classic DP problems']
+            },
+            'week5': {
+                'title': 'Week 5 – Advanced Topics',
+                'topics': ['Greedy algorithms', 'Backtracking techniques', 'Competitive programming practice']
+            }
+        }
+    }
+    
+    roadmap = roadmaps.get(domain, roadmaps['frontend'])
+    
+    return {
+        "message": f"Here's your personalized 5-week {domain.title()} roadmap:",
+        "roadmap": roadmap,
+        "domain": domain.title()
+    }
 
 @app.post("/feedback")
 def submit_feedback(request: dict):
