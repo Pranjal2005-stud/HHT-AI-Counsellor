@@ -18,9 +18,6 @@ from engine import update_score, should_repeat
 
 app = FastAPI(title="HHT AI Counsellor API", version="1.0.0")
 
-# Vercel handler
-handler = app
-
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
