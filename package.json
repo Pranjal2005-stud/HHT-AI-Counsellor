@@ -1,9 +1,8 @@
 {
-  "name": "hht-ai-counsellor",
+  "name": "hht-ai-counsellor-frontend",
   "version": "1.0.0",
   "scripts": {
     "build": "cd frontend && npm install && npm run build",
     "vercel-build": "cd frontend && npm install && npm run build"
-  },
-  "devDependencies": {}
+  }
 }
