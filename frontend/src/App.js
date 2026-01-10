@@ -92,13 +92,22 @@ function App() {
   }, []);
 
   const startConversation = async () => {
+    console.log('Attempting to connect to:', `${API_BASE_URL}/start`);
     try {
       const response = await axios.post(`${API_BASE_URL}/start`);
+      console.log('Connection successful:', response.data);
       setSessionId(response.data.session_id);
       addMessage("Hello! I'm your HHT AI Counsellor. I'm here to assess your technical skills and provide personalized learning recommendations. What's your name?", 'assistant');
       setConversationStarted(true);
     } catch (error) {
-      addMessage("Sorry, I'm having trouble connecting. Please make sure the backend server is running.", 'assistant');
+      console.error('Connection error:', error);
+      console.log('Error details:', error.response?.data, error.response?.status);
+      
+      // Fallback to offline mode
+      const offlineSessionId = 'offline-' + Date.now();
+      setSessionId(offlineSessionId);
+      addMessage("Hello! I'm your HHT AI Counsellor. I'm currently running in offline mode. What's your name?", 'assistant');
+      setConversationStarted(true);
     }
   };
 
