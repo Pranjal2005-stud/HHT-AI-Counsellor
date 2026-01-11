@@ -343,7 +343,19 @@ def _generate_detailed_results(state, questions):
 
 @app.post("/detailed-roadmap")
 def get_detailed_roadmap(request: dict):
-    domain = request.get("domain", "frontend").lower()
+    # Get domain from request or session
+    domain = request.get("domain")
+    
+    # If no domain in request, get from session
+    if not domain and request.get("session_id") in sessions:
+        state = sessions[request["session_id"]]
+        domain = getattr(state, 'selected_domain', 'frontend')
+    
+    # Default to frontend if still no domain
+    if not domain:
+        domain = 'frontend'
+    
+    domain = domain.lower()
     
     detailed_roadmaps = {
         'frontend': {
@@ -1393,7 +1405,19 @@ def get_detailed_roadmap(request: dict):
 
 @app.post("/download-roadmap")
 def download_roadmap_pdf(request: dict):
-    domain = request.get("domain", "frontend").lower()
+    # Get domain from request or session
+    domain = request.get("domain")
+    
+    # If no domain in request, get from session
+    if not domain and request.get("session_id") in sessions:
+        state = sessions[request["session_id"]]
+        domain = getattr(state, 'selected_domain', 'frontend')
+    
+    # Default to frontend if still no domain
+    if not domain:
+        domain = 'frontend'
+    
+    domain = domain.lower()
     
     # Get roadmap data
     roadmap_response = get_detailed_roadmap({"domain": domain})
@@ -1580,6 +1604,39 @@ def chat(request: dict):
     
     state = sessions[request["session_id"]]
     user_message = request["message"].lower().strip()
+    
+    # Initialize docs_shown flag if not exists
+    if not hasattr(state, 'docs_shown'):
+        state.docs_shown = False
+    
+    # Check if user mentions a different domain after assessment
+    valid_domains = ['backend', 'frontend', 'data analytics', 'machine learning', 'devops', 'cybersecurity', 'data engineering', 'algorithms']
+    mentioned_domain = None
+    
+    for domain in valid_domains:
+        if domain in user_message or any(word in user_message for word in domain.split()):
+            mentioned_domain = domain
+            break
+    
+    # If user mentions a different domain, offer to switch
+    if mentioned_domain and mentioned_domain != getattr(state, 'selected_domain', None):
+        state.pending_domain_switch = mentioned_domain
+        return {
+            "message": f"I see you're interested in {mentioned_domain}! Would you like me to provide a roadmap for {mentioned_domain} instead? Just say 'yes' and I'll generate it for you.",
+            "switch_domain": mentioned_domain
+        }
+    
+    # Handle domain switch confirmation
+    if hasattr(state, 'pending_domain_switch') and user_message in ['yes', 'y', 'sure', 'okay', 'ok']:
+        # Switch to new domain
+        new_domain = state.pending_domain_switch
+        state.selected_domain = new_domain
+        delattr(state, 'pending_domain_switch')
+        return {
+            "message": f"Great! I've switched to {new_domain}. Let me generate a roadmap for you.",
+            "generate_roadmap": new_domain
+        }
+    
     domain = getattr(state, 'selected_domain', 'frontend')
     
     # Domain-specific documentation links
@@ -1626,6 +1683,12 @@ def chat(request: dict):
         ]
     }
     
+    # Handle thank you messages
+    if any(word in user_message for word in ['thank', 'thanks', 'appreciate', 'helpful']):
+        return {
+            "message": "You're very welcome! I'm glad I could help. Feel free to ask if you have any other questions about your learning journey!"
+        }
+    
     # Handle improvement questions
     if any(word in user_message for word in ['improve', 'better', 'learn', 'study', 'focus', 'next', 'recommend']):
         if hasattr(state, 'selected_domain') and state.selected_domain:
@@ -1656,15 +1719,20 @@ def chat(request: dict):
                 "docs": domain_docs.get(domain, domain_docs['frontend'])
             }
     
-    # Handle general questions with documentation links
+    # Handle general questions with documentation links (only if not shown before)
     if any(word in user_message for word in ['how', 'what', 'why', 'when', 'where', 'help', 'guide', 'tutorial']):
-        return {
-            "message": "That's a great question! For specific technical guidance, I recommend checking these official resources and documentation:",
-            "docs": domain_docs.get(domain, domain_docs['frontend'])
-        }
+        if not state.docs_shown:
+            state.docs_shown = True
+            return {
+                "message": "That's a great question! For specific technical guidance, I recommend checking these official resources and documentation:",
+                "docs": domain_docs.get(domain, domain_docs['frontend'])
+            }
+        else:
+            return {
+                "message": "I'd be happy to help! Could you be more specific about what you'd like to know? You can also refer to the documentation links I shared earlier."
+            }
     
-    # Default response with documentation links
+    # Default response
     return {
-        "message": "Thanks for your question! I'm here to help with your learning journey. Check out these official resources for detailed guidance:",
-        "docs": domain_docs.get(domain, domain_docs['frontend'])
+        "message": "Thanks for your question! I'm here to help with your learning journey. Is there anything specific you'd like to know about your assessment or career path?"
     }

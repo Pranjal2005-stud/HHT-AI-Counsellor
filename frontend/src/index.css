@@ -172,23 +172,21 @@ body {
 
 
 .message-avatar {
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
-  font-weight: 600;
   flex-shrink: 0;
+  object-fit: cover;
+  border: 2px solid #e0e0e0;
+  margin-top: -8px;
 }
 
 .message.user .message-avatar {
-  /*background: #1e3c72;
-  color:#ffd700;
-  */
-   background: linear-gradient(135deg, #0d6efd, #00c6ff);
-    box-shadow: 0 0 12px rgba(13,110,253,0.6);
+  border: 2px solid #1e3c72;
+  box-shadow: 0 0 8px rgba(30,60,114,0.3);
+  margin-top: -8px;
+  width: 36px;
+  height: 36px;
 }
 .message {
   animation: slideUp 0.25s ease;
@@ -201,8 +199,11 @@ body {
 
 
 .message.assistant .message-avatar {
- background: linear-gradient(135deg, #0d6efd, #00c6ff);
-  box-shadow: 0 0 12px rgba(13,110,253,0.6);
+  border: 2px solid #0d6efd;
+  box-shadow: 0 0 8px rgba(13,110,253,0.3);
+  margin-top: -8px;
+  width: 36px;
+  height: 36px;
 }
 
 .message-content {
@@ -215,7 +216,10 @@ body {
 }
 
 .message.user .message-content {
+  background: #66b3ff;
   color: black;
+  border-radius: 18px;
+  padding: 10px 14px;
 }
 
 .message.assistant .message-content {
@@ -420,7 +424,7 @@ body {
   font-size: 14px;
   font-weight: 600;
   margin-bottom: 12px;
-  background: #ffd700;
+  background: #66b3ff;
   color: #1e3c72;
 }
 
@@ -451,7 +455,7 @@ body {
   padding: 8px 12px;
   margin: 6px 0;
   border-radius: 6px;
-  border-left: 3px solid #ffc107;
+  border-left: 3px solid #66b3ff;
 }
 
 .improvement-item strong {
@@ -489,7 +493,7 @@ body {
 
 .domain-button:hover {
   background: #1e3c72;
-  color: #ffd700;
+  color: #66b3ff;
   transform: translateY(-1px);
 }
 
@@ -527,7 +531,7 @@ body {
 
 .roadmap-button.yes {
   background: #1e3c72;
-  color: #ffd700;
+  color: #66b3ff;
 }
 
 .roadmap-button.yes:hover {
@@ -568,7 +572,7 @@ body {
   border-radius: 8px;
   padding: 16px;
   margin-bottom: 16px;
-  border-left: 4px solid #ffd700;
+  border-left: 4px solid #66b3ff;
 }
 
 .roadmap-week h4 {
@@ -620,7 +624,7 @@ body {
 .doc-link {
   display: inline-block;
   background: #1e3c72;
-  color: #ffd700;
+  color: #66b3ff;
   padding: 10px 16px;
   border-radius: 8px;
   text-decoration: none;
@@ -636,7 +640,7 @@ body {
 }
 
 .doc-link:visited {
-  color: #ffd700;
+  color: #66b3ff;
 }
 
 /* Detailed Roadmap Styles */
@@ -664,7 +668,7 @@ body {
 
 .detailed-roadmap-button:hover {
   background: #1e3c72;
-  color: #ffd700;
+  color: #66b3ff;
   transform: translateY(-1px);
 }
 
@@ -696,7 +700,7 @@ body {
   border-radius: 8px;
   padding: 20px;
   margin-bottom: 20px;
-  border-left: 4px solid #ffd700;
+  border-left: 4px solid #66b3ff;
 }
 
 .roadmap-step h4 {
@@ -779,7 +783,7 @@ body {
   padding: 8px 12px;
   margin-bottom: 6px;
   border-radius: 6px;
-  border-left: 3px solid #ffd700;
+  border-left: 3px solid #66b3ff;
   font-size: 14px;
   color: #333;
 }
@@ -795,7 +799,7 @@ body {
 
 .download-pdf-button {
   background: #1e3c72;
-  color: #ffd700;
+  color: #66b3ff;
   border: none;
   padding: 12px 24px;
   border-radius: 25px;

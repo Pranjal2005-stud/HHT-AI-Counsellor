@@ -292,7 +292,33 @@ function App() {
           session_id: sessionId,
           message: message
         });
+        
         addTypedMessage(response.data.message || response.data.reply, 'assistant');
+        
+        // Handle domain switching
+        if (response.data.switch_domain) {
+          // The backend has already sent the switch confirmation message
+          // No additional action needed here as the user will respond with yes/no
+        }
+        
+        // Handle roadmap generation for new domain
+        if (response.data.generate_roadmap) {
+          setTimeout(async () => {
+            try {
+              const roadmapResponse = await axios.post(`${API_BASE_URL}/detailed-roadmap`, {
+                session_id: sessionId,
+                domain: response.data.generate_roadmap
+              });
+              
+              addTypedMessage(`Here's your ${response.data.generate_roadmap} roadmap:`, 'assistant');
+              setTimeout(() => {
+                addMessage('', 'assistant', 'detailed-roadmap', roadmapResponse.data);
+              }, 1500);
+            } catch (error) {
+              addTypedMessage("I had trouble generating the roadmap. Please try again.", 'assistant');
+            }
+          }, 1000);
+        }
         
         // Add documentation links if provided
         if (response.data.docs && response.data.docs.length > 0) {
@@ -367,7 +393,8 @@ function App() {
   const downloadRoadmapPDF = async (domain) => {
     try {
       const response = await axios.post(`${API_BASE_URL}/download-roadmap`, {
-        domain: domain.toLowerCase()
+        session_id: sessionId,
+        domain: domain ? domain.toLowerCase() : undefined
       }, {
         responseType: 'blob'
       });
@@ -375,13 +402,13 @@ function App() {
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
       link.href = url;
-      link.setAttribute('download', `${domain}_roadmap.pdf`);
+      link.setAttribute('download', `${domain || 'roadmap'}_roadmap.pdf`);
       document.body.appendChild(link);
       link.click();
       link.remove();
       window.URL.revokeObjectURL(url);
       
-      addTypedMessage(`📄 ${domain} roadmap PDF downloaded successfully!`, 'assistant');
+      addTypedMessage(`📄 Roadmap PDF downloaded successfully!`, 'assistant');
     } catch (error) {
       addTypedMessage("Sorry, I couldn't generate the PDF. Please try again later.", 'assistant');
     }
@@ -459,7 +486,7 @@ function App() {
     if (message.type === 'assessment') {
       return (
         <div key={index} className="message assistant">
-          <div className="message-avatar">AI</div>
+          <img src="/chaticon1.png" alt="AI" className="message-avatar" />
           <div className="message-content">
             <div className="assessment-result">
               <h3>Assessment Results</h3>
@@ -516,7 +543,7 @@ function App() {
     if (message.type === 'roadmap') {
       return (
         <div key={index} className="message assistant">
-          <div className="message-avatar">AI</div>
+          <img src="/chaticon1.png" alt="AI" className="message-avatar" />
           <div className="message-content">
             <div className="roadmap-result">
               <h3>5-Week {message.data.domain} Learning Roadmap</h3>
@@ -539,7 +566,7 @@ function App() {
     if (message.type === 'detailed-roadmap') {
       return (
         <div key={index} className="message assistant">
-          <div className="message-avatar">AI</div>
+          <img src="/chaticon1.png" alt="AI" className="message-avatar" />
           <div className="message-content">
             <div className="detailed-roadmap-result">
               <h3>{message.data.title}</h3>
@@ -612,7 +639,7 @@ function App() {
               <div className="download-section">
                 <button 
                   className="download-pdf-button"
-                  onClick={() => downloadRoadmapPDF(message.data.title.split(' ')[0])}
+                  onClick={() => downloadRoadmapPDF()}
                 >
                   📄 Download PDF Roadmap
                 </button>
@@ -625,7 +652,7 @@ function App() {
     if (message.type === 'docs') {
       return (
         <div key={index} className="message assistant">
-          <div className="message-avatar">AI</div>
+          <img src="/chaticon1.png" alt="AI" className="message-avatar" />
           <div className="message-content">
             <div className="docs-links">
               <h4>📚 Official Documentation & Resources:</h4>
@@ -650,9 +677,11 @@ function App() {
 
     return (
       <div key={index} className={`message ${message.sender}`}>
-        <div className="message-avatar">
-          {message.sender === 'user' ? 'You' : 'AI'}
-        </div>
+        <img 
+          src={message.sender === 'user' ? '/usericon.png' : '/chaticon1.png'} 
+          alt={message.sender === 'user' ? 'User' : 'AI'} 
+          className="message-avatar" 
+        />
         <div className="message-content">
           {message.content}
           {message.sender === 'assistant' && showDomainButtons && index === messages.length - 1 && (
@@ -721,7 +750,7 @@ function App() {
         
         {isTyping && (
           <div className="message assistant">
-            <div className="message-avatar">AI</div>
+            <img src="/chaticon1.png" alt="AI" className="message-avatar" />
             <div className="typing-indicator">
               <div className="typing-dots">
                 <span></span>
